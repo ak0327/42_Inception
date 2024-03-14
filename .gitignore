@@ -1,0 +1,9 @@
+**/**
+
+!.gitignore
+!Makefile
+!srcs
+!srcs/**
+
+.env
+.idea
