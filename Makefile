@@ -1,25 +1,25 @@
-DC_FILE = srcs/docker-compose.yml
+COMPOSE_YML = srcs/docker-compose.yml
 
 up:
-	docker-compose -f $(DC_FILE) up -d
+	docker-compose -f $(COMPOSE_YML) up -d --build
 
-re:
-	docker-compose -f $(DC_FILE) up -d --build
+stop:
+	docker-compose -f $(COMPOSE_YML) stop
+
+restart:
+	docker-compose -f $(COMPOSE_YML) restart
 
 down:
-	docker-compose -f $(DC_FILE) down --rm all
+	docker-compose -f $(COMPOSE_YML) down
 
-logs:
-	docker-compose -f $(DC_FILE) logs
+log:
+	docker-compose -f $(COMPOSE_YML) logs
 
 ps:
-	docker-compose -f $(DC_FILE) ps -a
+	docker-compose -f $(COMPOSE_YML) ps -a
 
-#rmi:
-#	docker rmi $(docker images -q)
-#
-#rm:
-#	docker rm $(docker ps -a -q)
-#	docker rmi $(docker images -f "dangling=true" -q)
-
-#clean: rmi rm
+clean:
+	docker-compose -f $(COMPOSE_YML) down --volumes --rmi all
+	@if [ -n "$$(docker images -q)" ]; then docker rmi $$(docker images -q); fi
+	@if [ -n "$$(docker ps -a -q)" ]; then docker rm $$(docker ps -a -q); fi
+	@if [ -n "$$(docker images -f "dangling=true" -q)" ]; then docker rmi $$(docker images -f "dangling=true" -q); fi
