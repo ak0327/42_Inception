@@ -9,21 +9,21 @@ RUN sed -i "/^\/\* That's all, stop editing! Happy publishing. \*\/$/i define('W
 #
 ## PHP
 #RUN apk add --no-cache \
-#    php81 \
-#    php81-ctype \
-#    php81-curl \
-#    php81-dom \
-#    php81-fpm \
-#    php81-intl \
-#    php81-json \
-#    php81-mbstring \
-#    php81-mysqli \
-#    php81-openssl \
-#    php81-phar \
-#    php81-session \
-#    php81-xml \
-#    php81-xmlreader \
-#    php81-zlib
+#    php \
+#    php-ctype \
+#    php-curl \
+#    php-dom \
+#    php-fpm \
+#    php-intl \
+#    php-json \
+#    php-mbstring \
+#    php-mysqli \
+#    php-openssl \
+#    php-phar \
+#    php-session \
+#    php-xml \
+#    php-xmlreader \
+#    php-zlib
 #
 ## Wordpress
 #RUN apk add --no-cache wget \
@@ -39,5 +39,5 @@ RUN sed -i "/^\/\* That's all, stop editing! Happy publishing. \*\/$/i define('W
 #
 #EXPOSE 9000
 #
-#CMD ["php-fpm81", "-F"]
+#CMD ["php-fpm", "-F"]
 ##CMD ["php-fpm"]

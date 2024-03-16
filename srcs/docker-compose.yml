@@ -50,16 +50,16 @@ services:
 #    networks:
 #      - wordpress_network
 
-#  adminer:
-#    build: requirements/bonus/adminer
-#    depends_on:
-#      - mariadb
-#      - wordpress
-#    ports:
-#      - "8080:8080"
-#    restart: always
-#    networks:
-#      - wordpress_network
+  adminer:
+    build: requirements/bonus/adminer
+    depends_on:
+      - mariadb
+      - wordpress
+    ports:
+      - "8080:8080"
+    restart: always
+    networks:
+      - wordpress_network
 
 
 volumes:
@@ -68,27 +68,3 @@ volumes:
 
 networks:
   wordpress_network:
-
-# https://qiita.com/nakazawaken1/items/09d6cbef3dae6dbaf765
-#version: "3.7"
-#services:
-#  db:
-#    image: mariadb:latest
-#    restart: always
-#    environment:
-#      MYSQL_ROOT_PASSWORD: root
-#      MYSQL_DATABASE: wordpress_db
-#      MYSQL_USER: wordpress_user
-#      MYSQL_PASSWORD: wordpress_pass
-#  ap:
-#    image: wordpress:latest
-#    restart: always
-#    depends_on:
-#      - db
-#    ports:
-#      - "8000:80"
-#    environment:
-#      WORDPRESS_DB_HOST: db:3306
-#      WORDPRESS_DB_USER: wordpress_user
-#      WORDPRESS_DB_PASSWORD: wordpress_pass
-#      WORDPRESS_DB_NAME: wordpress_db
