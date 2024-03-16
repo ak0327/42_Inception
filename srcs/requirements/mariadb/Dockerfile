@@ -6,8 +6,6 @@ RUN apk add --no-cache \
     mariadb-client
 
 RUN mkdir -p /var/lib/mysql /var/run/mysqld
-#    && chown -R mysql:mysql /var/lib/mysql /var/run/mysqld \
-#    && chmod 755 /var/run/mysqld
 
 COPY conf/my.cnf /etc/mysql/my.cnf
 

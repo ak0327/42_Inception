@@ -1,11 +1,14 @@
 # NGINX
 FROM alpine:3.18
 
-RUN apk add --no-cache nginx openssl
+RUN apk add --no-cache \
+    nginx \
+    openssl
 
 # nginx
-RUN mkdir -p run/nginx
-#COPY conf/default.conf /etc/nginx/conf.d/default.conf
+RUN mkdir -p /var/run/nginx
+COPY conf/nginx.conf /etc/nginx/nginx.conf
+COPY conf/default.conf /etc/nginx/http.d/default.conf
 
 # ssl certificate
 ## x509  : self-signed certificate
@@ -14,13 +17,13 @@ RUN mkdir -p run/nginx
 ## keyout: save path for selfsigned key
 ## out   : save path for selfsigned certificate
 ## subj  :
-RUN mkdir -p etc/nginx/ssl/privates /etc/nginx/ssl/certs \
+RUN mkdir -p /etc/nginx/ssl \
     && openssl req \
     -x509 \
     -noenc \
     -newkey rsa:2048 \
-    -keyout /etc/nginx/ssl/privates/inception.key \
-    -out /etc/nginx/ssl/certs/inception.crt \
+    -out /etc/nginx/ssl/inception.crt \
+    -keyout /etc/nginx/ssl/inception.key \
     -subj "/C=JP/ST=Tokyo/L=city/O=42Tokyo/CN=takira.42.fr"
 
 EXPOSE 443

@@ -23,3 +23,6 @@ clean:
 	@if [ -n "$$(docker images -q)" ]; then docker rmi $$(docker images -q); fi
 	@if [ -n "$$(docker ps -a -q)" ]; then docker rm $$(docker ps -a -q); fi
 	@if [ -n "$$(docker images -f "dangling=true" -q)" ]; then docker rmi $$(docker images -f "dangling=true" -q); fi
+
+reload:
+	dock

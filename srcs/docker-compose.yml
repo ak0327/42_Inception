@@ -21,8 +21,8 @@ services:
       - wordpress_network
 
   wordpress:
-#    image: wordpress:latest
-    build: requirements/wordpress
+    image: wordpress:latest
+#    build: requirements/wordpress
     depends_on:
       - mariadb
     ports:
@@ -38,17 +38,18 @@ services:
     networks:
       - wordpress_network
 
-#  nginx:
-#    build: requirements/nginx
-#    depends_on:
-#      - wordpress
-#    ports:
-#      - "443:443"
-#    restart: always
-#    volumes:
-#      - wp_data:/var/www/html
-#    networks:
-#      - wordpress_network
+  nginx:
+#    image: nginx:latest
+    build: requirements/nginx
+    depends_on:
+      - wordpress
+    ports:
+      - "443:443"
+    restart: always
+    volumes:
+      - wp_data:/var/www/html
+    networks:
+      - wordpress_network
 
   adminer:
     build: requirements/bonus/adminer
