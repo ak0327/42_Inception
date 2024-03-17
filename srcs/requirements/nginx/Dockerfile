@@ -8,7 +8,7 @@ RUN apk add --no-cache \
 
 # nginx
 RUN mkdir -p /var/run/nginx
-COPY conf/nginx.conf /etc/nginx/nginx.conf
+#COPY conf/nginx.conf /etc/nginx/nginx.conf
 COPY conf/default.conf /etc/nginx/http.d/default.conf
 
 # ssl certificate
