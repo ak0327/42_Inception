@@ -29,7 +29,7 @@ services:
       - "8000:80"
     restart: always
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:80/wp-admin/install.php || exit 1"]
+      test: ["CMD-SHELL", "curl --fail localhost:80/wp-admin/install.php || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -52,7 +52,7 @@ services:
       - "443:443"
     restart: always
     healthcheck:
-      test: [ "CMD-SHELL", "curl -f https://localhost/ || exit 1" ]
+      test: [ "CMD-SHELL", "curl --fail --insecure https://localhost:443 || exit 1" ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -70,7 +70,7 @@ services:
       - "8080:8080"
     restart: always
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8080/ || exit 1"]
+      test: ["CMD-SHELL", "curl --fail localhost:8080 || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
