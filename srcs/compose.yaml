@@ -6,7 +6,7 @@ services:
     build: requirements/mariadb
     restart: always
     healthcheck:
-      test: [ "CMD-SHELL", "mysqladmin ping -h localhost -u root --password=$$MYSQL_ROOT_PASSWORD" ]
+      test: [ "CMD-SHELL", "mysqladmin ping -h localhost -u root --password=$$MYSQL_ROOT_PASS" ]
       interval: 10s
       timeout: 5s
       retries: 5

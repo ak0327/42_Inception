@@ -1,5 +1,7 @@
 COMPOSE_FILE = srcs/compose.yaml
 
+all: up
+
 .PYHONY: up
 up:
 	docker-compose -f $(COMPOSE_FILE) up --build
@@ -26,6 +28,10 @@ logs:
 
 .PYHONY: ps
 ps:
+	docker-compose -f $(COMPOSE_FILE) ps
+
+.PYHONY: ps-a
+ps-a:
 	docker-compose -f $(COMPOSE_FILE) ps -a
 
 .PYHONY: clean

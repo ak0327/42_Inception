@@ -1,6 +1,11 @@
 **/**
 
 !.gitignore
+
+!.github
+!.github/workflows/
+!.github/workflows/ci.yml
+
 !Makefile
 !srcs
 !srcs/**
