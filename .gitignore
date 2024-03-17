@@ -5,6 +5,7 @@
 !.github
 !.github/workflows/
 !.github/workflows/ci.yml
+!.github/workflows/lint.yml
 
 !Makefile
 !srcs
