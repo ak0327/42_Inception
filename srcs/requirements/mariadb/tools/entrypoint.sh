@@ -29,17 +29,17 @@ if [ ! -d "/var/lib/mysql/mysql" ]; then
     mysql -u root <<-EOSQL
         SET @@SESSION.SQL_LOG_BIN=0;
         DELETE FROM mysql.user ;
-        CREATE USER 'root'@'%' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}' ;
+        CREATE USER 'root'@'%' IDENTIFIED BY '${MYSQL_ROOT_PASS}' ;
         GRANT ALL ON *.* TO 'root'@'%' WITH GRANT OPTION ;
         FLUSH PRIVILEGES ;
-        CREATE DATABASE IF NOT EXISTS \`${MYSQL_DATABASE}\` ;
-        CREATE USER '${MYSQL_USER}'@'%' IDENTIFIED BY '${MYSQL_PASSWORD}' ;
-        GRANT ALL ON \`${MYSQL_DATABASE}\`.* TO '${MYSQL_USER}'@'%' ;
+        CREATE DATABASE IF NOT EXISTS \`${MYSQL_DB_NAME}\` ;
+        CREATE USER '${MYSQL_USER}'@'%' IDENTIFIED BY '${MYSQL_PASS}' ;
+        GRANT ALL ON \`${MYSQL_DB_NAME}\`.* TO '${MYSQL_USER}'@'%' ;
         FLUSH PRIVILEGES ;
 EOSQL
 
     # MariaDBサーバーをシャットダウン
-    if ! mysqladmin -uroot -p"${MYSQL_ROOT_PASSWORD}" shutdown; then
+    if ! mysqladmin -uroot -p"${MYSQL_ROOT_PASS}" shutdown; then
         echo >&2 'MariaDB shutdown failed'
         exit 1
     fi
@@ -62,15 +62,15 @@ exec "$@"
 ##    rc-service mariadb setup
 ##    rc-service mariadb start
 #
-#    mysqladmin -u root password "${MYSQL_ROOT_PASSWORD}"
+#    mysqladmin -u root password "${MYSQL_ROOT_PASS}"
 #
-##    echo "CREATE USER '${MYSQL_USER}' IDENTIFIED BY '${MYSQL_PASSWORD}';" >> /tmp/sql
+##    echo "CREATE USER '${MYSQL_USER}' IDENTIFIED BY '${MYSQL_PASS}';" >> /tmp/sql
 #    echo "CREATE DATABASE IF NOT EXISTS ${MYSQL_USER} DEFAULT CHARACTER SET utf8;"  >> /tmp/sql
-#    echo "grant all privileges on ${MYSQL_USER}.* to ${MYSQL_USER}@'%' identified by '${MYSQL_PASSWORD}' with grant option ;" >> /tmp/sql
+#    echo "grant all privileges on ${MYSQL_USER}.* to ${MYSQL_USER}@'%' identified by '${MYSQL_PASS}' with grant option ;" >> /tmp/sql
 #    echo "DELETE FROM mysql.user WHERE User='';" >> /tmp/sql
 #    echo "DROP DATABASE test;" >> /tmp/sql
 #    echo "FLUSH PRIVILEGES;" >> /tmp/sql
-#    cat /tmp/sql | mysql -u root --password="${MYSQL_ROOT_PASSWORD}"
+#    cat /tmp/sql | mysql -u root --password="${MYSQL_ROOT_PASS}"
 #    rm /tmp/sql
 ##    rc-service mariadb stop
 #else

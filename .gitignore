@@ -5,5 +5,5 @@
 !srcs
 !srcs/**
 
-.env
+#.env
 .idea

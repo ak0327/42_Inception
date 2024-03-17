@@ -11,10 +11,10 @@ services:
       timeout: 5s
       retries: 5
     environment:
-      - MYSQL_ROOT_PASSWORD
-      - MYSQL_DATABASE
+      - MYSQL_ROOT_PASS
+      - MYSQL_DB_NAME
       - MYSQL_USER
-      - MYSQL_PASSWORD
+      - MYSQL_PASS
     volumes:
       - db_data:/var/lib/mysql
     networks:
@@ -28,11 +28,16 @@ services:
     ports:
       - "8000:80"
     restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:80/wp-admin/install.php || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
     environment:
-      - WORDPRESS_DB_HOST
-      - WORDPRESS_DB_NAME
-      - WORDPRESS_DB_USER
-      - WORDPRESS_DB_PASSWORD
+      - WP_DB_HOST
+      - WP_DB_NAME
+      - WP_DB_USER
+      - WP_DB_PASS
     volumes:
       - wp_data:/var/www/html
     networks:
@@ -46,6 +51,11 @@ services:
     ports:
       - "443:443"
     restart: always
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f https://localhost/ || exit 1" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
     volumes:
       - wp_data:/var/www/html
     networks:
@@ -59,6 +69,11 @@ services:
     ports:
       - "8080:8080"
     restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
     networks:
       - wordpress_network
 
