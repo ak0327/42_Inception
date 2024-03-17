@@ -5,23 +5,21 @@ FROM alpine:3.18
 
 # PHP
 RUN apk add --no-cache \
-    curl="8.*" \
-    php81="8.1.*" \
-    php81-ctype="8.1.*" \
-    php81-curl="8.1.*" \
-    php81-dom="8.1.*" \
-    php81-fpm="8.1.*" \
-    php81-intl="8.1.*" \
-    php81-json="8.1.*" \
-    php81-mbstring="8.1.*" \
-    php81-mysqli="8.1.*" \
-    php81-openssl="8.1.*" \
-    php81-phar="8.1.*" \
-    php81-session="8.1.*" \
-    php81-xml="8.1.*" \
-    php81-xmlreader="8.1.*" \
-    php81-zlib="8.1.*" \
-    icu-data-full="73.*"
+    curl=8.5.0-r0 \
+    php81=8.1.27-r0 \
+    php81-ctype=8.1.27-r0 \
+    php81-curl=8.1.27-r0 \
+    php81-dom=8.1.27-r0 \
+    php81-fpm=8.1.27-r0 \
+    php81-intl=8.1.27-r0 \
+    php81-mbstring=8.1.27-r0 \
+    php81-mysqli=8.1.27-r0 \
+    php81-openssl=8.1.27-r0 \
+    php81-phar=8.1.27-r0 \
+    php81-session=8.1.27-r0 \
+    php81-xml=8.1.27-r0 \
+    php81-xmlreader=8.1.27-r0 \
+    icu-data-full=73.2-r2
 
 # WP-CLI
 RUN curl --silent -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \

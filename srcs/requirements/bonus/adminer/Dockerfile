@@ -3,12 +3,12 @@
 FROM alpine:3.18
 
 RUN apk add --no-cache \
-    curl="8.1.*" \
-    php="8.1.*" \
-    php-pdo_mysql="8.1.*" \
-    php-mbstring="8.1.*" \
-    php-session="8.1.*" \
-    wget="1.*"
+    curl=8.5.0-r0 \
+    php=8.1.27-r0 \
+    php-pdo_mysql=8.1.27-r0 \
+    php-mbstring=8.1.27-r0 \
+    php-session=8.1.27-r0 \
+    wget=1.21.4-r0
 
 RUN mkdir -p /var/www/html/ \
     && wget --quiet https://github.com/vrana/adminer/releases/download/v4.8.1/adminer-4.8.1.php \
