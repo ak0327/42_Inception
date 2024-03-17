@@ -5,6 +5,7 @@ FROM alpine:3.18
 
 # PHP
 RUN apk add --no-cache \
+    curl \
     php81 \
     php81-ctype \
     php81-curl \
@@ -19,20 +20,30 @@ RUN apk add --no-cache \
     php81-session \
     php81-xml \
     php81-xmlreader \
-    php81-zlib
+    php81-zlib \
+    icu-data-full
 
-# Wordpress
-RUN apk add --no-cache wget \
-    && wget https://wordpress.org/latest.tar.gz \
-    && mkdir -p /var/www/html \
-    && tar -xzf latest.tar.gz -C /var/www/html \
-    && rm latest.tar.gz \
-    && chown -R nobody:nobody /var/www/html
+# WP-CLI
+RUN curl --silent -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
+    && chmod +x wp-cli.phar  \
+    && mv wp-cli.phar /usr/local/bin/wp-cli.phar
+# wp -> wp-cli.phar https://github.com/wp-cli/config-command/issues/31
 
-WORKDIR /var/www/html
+ENV WP_PATH="/var/www/html"
+RUN mkdir -p "${WP_PATH}" \
+    && chmod 755 "${WP_PATH}" \
+    && chown -R nobody:nobody "${WP_PATH}" \
+    && wp-cli.phar core download --allow-root --path="${WP_PATH}"
+
+COPY conf/www.conf /etc/php81/php-fpm.d/www.conf
+#COPY tools/helthcheck.php /var/www/html/healthcheck.php
 
 RUN mkdir -p /var/www/html/wp-content/logs
 
 EXPOSE 9000
+
+COPY tools/entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/entrypoint.sh
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
 CMD ["php-fpm81", "-F"]

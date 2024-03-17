@@ -2,42 +2,58 @@ version: '3'
 
 services:
   mariadb:
-#    image: mariadb:latest # tmp
-    build: requirements/mariadb
+#    image: mariadb:latest
+    image: mariadb:inception
+    build:
+      context: ./requirements/mariadb
     restart: always
     healthcheck:
-      test: [ "CMD-SHELL", "mysqladmin ping -h localhost -u root --password=$$MYSQL_ROOT_PASS" ]
+      test: [ "CMD-SHELL", "mysqladmin ping -h localhost -u root --password=$$MYSQL_ROOT_PASSWORD" ]
       interval: 10s
       timeout: 5s
       retries: 5
     environment:
-      - MYSQL_ROOT_PASS
-      - MYSQL_DB_NAME
-      - MYSQL_USER
-      - MYSQL_PASS
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DB_NAME=wp_db
+      - MYSQL_USER=db_user
+      - MYSQL_PASSWORD=db_pass
     volumes:
       - db_data:/var/lib/mysql
     networks:
       - wordpress_network
 
   wordpress:
-    image: wordpress:latest
-#    build: requirements/wordpress
+#    image: wordpress:latest
+    image: wordpress:inception
+    build:
+      context: ./requirements/wordpress
     depends_on:
-      - mariadb
-    ports:
-      - "8000:80"
+      mariadb:
+        condition: service_healthy
     restart: always
-    healthcheck:
-      test: ["CMD-SHELL", "curl --fail localhost:80/wp-admin/install.php || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+#    healthcheck:
+#      test: ["CMD-SHELL", "curl --fail localhost:9000 || exit 1"]
+#      interval: 30s
+#      timeout: 10s
+#      retries: 3
     environment:
-      - WP_DB_HOST
-      - WP_DB_NAME
-      - WP_DB_USER
-      - WP_DB_PASS
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DB_NAME=wp_db
+      - MYSQL_USER=db_user
+      - MYSQL_PASSWORD=db_pass
+      - WP_PATH=/var/www/html
+      - WP_DB_HOST=mariadb:3306
+      - WP_DB_NAME=wp_db
+      - WP_DB_USER=db_user
+      - WP_DB_PASSWORD=db_pass
+      - WP_URL=takira.42.fr
+      - WP_TITLE=wp_title
+      - WP_ADMIN_USER=wp_admin
+      - WP_ADMIN_PASSWORD=wp_admin_pass
+      - WP_ADMIN_EMAIL=ad_admin@email.com
+      - WP_EDITOR_USER=wp_editor_user
+      - WP_EDITOR_PASSWORD=wp_editor_pass
+      - WP_EDITOR_EMAIL=ep_editor@email.com
     volumes:
       - wp_data:/var/www/html
     networks:
@@ -45,38 +61,43 @@ services:
 
   nginx:
 #    image: nginx:latest
-    build: requirements/nginx
+    image: nginx:inception
+    build:
+      context: ./requirements/nginx
     depends_on:
       - wordpress
+#      wordpress:
+#        condition: service_healthy
     ports:
       - "443:443"
     restart: always
-    healthcheck:
-      test: [ "CMD-SHELL", "curl --fail --insecure https://localhost:443 || exit 1" ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+#    healthcheck:
+#      test: ["CMD-SHELL", "curl --fail localhost:80 || exit 1"]
+#      interval: 30s
+#      timeout: 10s
+#      retries: 3
     volumes:
       - wp_data:/var/www/html
     networks:
       - wordpress_network
 
-  adminer:
-    build: requirements/bonus/adminer
-    depends_on:
-      - mariadb
-      - wordpress
-    ports:
-      - "8080:8080"
-    restart: always
-    healthcheck:
-      test: ["CMD-SHELL", "curl --fail localhost:8080 || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-    networks:
-      - wordpress_network
-
+#  adminer:
+#    image: adminer:inception
+#    build:
+#      context: ./requirements/bonus/adminer
+#    depends_on:
+#      mariadb:
+#        condition: service_healthy
+#    ports:
+#      - "8080:8080"
+#    restart: always
+#    healthcheck:
+#      test: ["CMD-SHELL", "curl --fail localhost:8080 || exit 1"]
+#      interval: 30s
+#      timeout: 10s
+#      retries: 3
+#    networks:
+#      - wordpress_network
 
 volumes:
   db_data:

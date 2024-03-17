@@ -1,6 +1,6 @@
 COMPOSE_FILE = srcs/compose.yaml
 
-all: up
+all: up-d
 
 .PYHONY: up
 up:
@@ -37,9 +37,12 @@ ps-a:
 .PYHONY: clean
 clean:
 	docker-compose -f $(COMPOSE_FILE) down --volumes --rmi all
-	@if [ -n "$$(docker images -q)" ]; then docker rmi $$(docker images -q); fi
-	@if [ -n "$$(docker ps -a -q)" ]; then docker rm $$(docker ps -a -q); fi
-	@if [ -n "$$(docker images -f "dangling=true" -q)" ]; then docker rmi $$(docker images -f "dangling=true" -q); fi
+	@if [ -n "$$(docker images -q)" ]; then docker rmi -f $$(docker images -q); fi
+	@if [ -n "$$(docker ps -a -q)" ]; then docker rm -f $$(docker ps -a -q); fi
+	@if [ -n "$$(docker images -f "dangling=true" -q)" ]; then docker rmi -f $$(docker images -f "dangling=true" -q); fi
+
+.PYHONY: re
+re: clean up-d
 
 .PYHONY: exec_mariadb
 exec_mariadb:

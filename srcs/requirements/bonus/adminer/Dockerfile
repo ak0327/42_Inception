@@ -11,7 +11,7 @@ RUN apk add --no-cache \
     wget
 
 RUN mkdir -p /var/www/html/ \
-    && wget https://github.com/vrana/adminer/releases/download/v4.8.1/adminer-4.8.1.php \
+    && wget --quiet https://github.com/vrana/adminer/releases/download/v4.8.1/adminer-4.8.1.php \
        -O /var/www/html/index.php
 
 EXPOSE 8080
