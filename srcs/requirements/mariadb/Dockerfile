@@ -2,8 +2,8 @@
 FROM alpine:3.18
 
 RUN apk add --no-cache \
-    mariadb \
-    mariadb-client
+    mariadb="15.*" \
+    mariadb-client="10.*"
 
 RUN mkdir -p /var/lib/mysql /var/run/mysqld
 

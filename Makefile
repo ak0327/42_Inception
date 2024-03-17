@@ -1,5 +1,12 @@
 COMPOSE_FILE = srcs/compose.yaml
 
+DIRS = srcs/requirements/mariadb \
+       srcs/requirements/nginx \
+       srcs/requirements/wordpress \
+       srcs/requirements/bonus/adminer
+
+DOCKER_FILES = $(addsuffix /Dockerfile, $(DIRS))
+
 all: up-d
 
 .PYHONY: up
@@ -44,6 +51,10 @@ clean:
 .PYHONY: re
 re: clean up-d
 
+.PYHONY: lint
+lint:
+	hadolint $(DOCKER_FILES)
+
 .PYHONY: exec_mariadb
 exec_mariadb:
 	docker exec -it srcs_mariadb_1 sh
@@ -59,3 +70,4 @@ exec_wordpress:
 .PYHONY: exec_adminer
 exec_adminer:
 	docker exec -it srcs_adminer_1 sh
+

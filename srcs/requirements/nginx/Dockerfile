@@ -2,9 +2,9 @@
 FROM alpine:3.18
 
 RUN apk add --no-cache \
-    curl \
-    nginx \
-    openssl
+    curl="8.*" \
+    nginx="1.*" \
+    openssl="3.*"
 
 # nginx
 RUN mkdir -p /var/run/nginx

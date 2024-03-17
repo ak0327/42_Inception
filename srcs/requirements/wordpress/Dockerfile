@@ -5,23 +5,23 @@ FROM alpine:3.18
 
 # PHP
 RUN apk add --no-cache \
-    curl \
-    php81 \
-    php81-ctype \
-    php81-curl \
-    php81-dom \
-    php81-fpm \
-    php81-intl \
-    php81-json \
-    php81-mbstring \
-    php81-mysqli \
-    php81-openssl \
-    php81-phar \
-    php81-session \
-    php81-xml \
-    php81-xmlreader \
-    php81-zlib \
-    icu-data-full
+    curl="8.*" \
+    php81="8.1.*" \
+    php81-ctype="8.1.*" \
+    php81-curl="8.1.*" \
+    php81-dom="8.1.*" \
+    php81-fpm="8.1.*" \
+    php81-intl="8.1.*" \
+    php81-json="8.1.*" \
+    php81-mbstring="8.1.*" \
+    php81-mysqli="8.1.*" \
+    php81-openssl="8.1.*" \
+    php81-phar="8.1.*" \
+    php81-session="8.1.*" \
+    php81-xml="8.1.*" \
+    php81-xmlreader="8.1.*" \
+    php81-zlib="8.1.*" \
+    icu-data-full="73.*"
 
 # WP-CLI
 RUN curl --silent -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
