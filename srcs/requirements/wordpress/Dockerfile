@@ -1,5 +1,3 @@
-#FROM wordpress:latest
-
 # Wordpress and php-pfm
 FROM alpine:3.18
 

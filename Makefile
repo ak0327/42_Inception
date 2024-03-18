@@ -7,14 +7,18 @@ DIRS = srcs/requirements/mariadb \
 
 DOCKER_FILES = $(addsuffix /Dockerfile, $(DIRS))
 
-all: up-d
+###########################################################################
+
+all: start
+
+###########################################################################
 
 .PYHONY: up
 up:
 	docker-compose -f $(COMPOSE_FILE) up --build
 
-.PYHONY: up-d
-up-d:
+.PYHONY: start
+start:
 	docker-compose -f $(COMPOSE_FILE) up -d --build
 
 .PYHONY: stop
@@ -29,9 +33,35 @@ restart:
 down:
 	docker-compose -f $(COMPOSE_FILE) down
 
+.PYHONY: network_rm
+network_rm:
+	docker network ls --filter type=custom -q | xargs -r docker network rm
+
+.PYHONY: clean
+clean:
+	docker-compose -f $(COMPOSE_FILE) down --volumes --rmi all
+	@if [ -n "$$(docker images -q)" ]; then docker rmi -f $$(docker images -q); fi
+	@if [ -n "$$(docker ps -a -q)" ]; then docker rm -f $$(docker ps -a -q); fi
+	@if [ -n "$$(docker images -f "dangling=true" -q)" ]; then docker rmi -f $$(docker images -f "dangling=true" -q); fi
+	network_rm
+
+.PYHONY: re
+re: clean up-d
+
+###########################################################################
+
 .PYHONY: logs
 logs:
 	docker-compose -f $(COMPOSE_FILE) logs
+
+.PYHONY: log_nginx
+log_nginx:
+	docker-compose -f $(COMPOSE_FILE) logs nginx
+
+.PYHONY: log_mariadb
+log_mariadb:
+	docker-compose -f $(COMPOSE_FILE) logs mariadb
+
 
 .PYHONY: ps
 ps:
@@ -41,19 +71,13 @@ ps:
 ps-a:
 	docker-compose -f $(COMPOSE_FILE) ps -a
 
-.PYHONY: clean
-clean:
-	docker-compose -f $(COMPOSE_FILE) down --volumes --rmi all
-	@if [ -n "$$(docker images -q)" ]; then docker rmi -f $$(docker images -q); fi
-	@if [ -n "$$(docker ps -a -q)" ]; then docker rm -f $$(docker ps -a -q); fi
-	@if [ -n "$$(docker images -f "dangling=true" -q)" ]; then docker rmi -f $$(docker images -f "dangling=true" -q); fi
-
-.PYHONY: re
-re: clean up-d
+###########################################################################
 
 .PYHONY: lint
 lint:
 	hadolint $(DOCKER_FILES)
+
+###########################################################################
 
 .PYHONY: exec_mariadb
 exec_mariadb:
