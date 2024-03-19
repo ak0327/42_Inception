@@ -29,6 +29,8 @@ services:
     depends_on:
       mariadb:
         condition: service_healthy
+      redis:
+        condition: service_healthy
     restart: always
     healthcheck:
       test: ["CMD", "php", "--run", "echo 'PHP is working';"]
@@ -119,9 +121,19 @@ services:
     networks:
       - database_network
 
-#  redis:
-#    networks:
-#      - wordpress_network
+  redis:
+    image: redis:inception
+    build: requirements/bonus/redis
+    ports:
+      - "10.0.2.15:6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: always
+    networks:
+      - wordpress_network
 #
 #  ftp:
 #    networks:

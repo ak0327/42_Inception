@@ -95,3 +95,11 @@ exec_wordpress:
 exec_adminer:
 	docker exec -it srcs_adminer_1 sh
 
+.PYHONY: exec_dnsmasq
+exec_dnsmasq:
+	docker exec -it srcs_dnsmasq_1 sh
+
+.PYHONY: exec_redis
+exec_redis:
+	docker exec -it srcs_redis_1 sh
+
