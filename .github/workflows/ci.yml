@@ -15,7 +15,7 @@ jobs:
           docker-compose --version
 
       - name: Build and start containers
-        run: make up-d
+        run: make start
 
       - name: Check containers health
         run: |

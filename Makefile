@@ -35,7 +35,7 @@ down:
 
 .PYHONY: network_rm
 network_rm:
-	docker network ls -q | xargs -r docker network rm
+	docker network ls --filter type=custom -q | xargs -r docker network rm
 
 .PYHONY: clean
 clean:
@@ -76,7 +76,9 @@ ps-a:
 
 .PYHONY: lint
 lint:
-	hadolint $(DOCKER_FILES)
+	hadolint $(DOCKER_FILES) \
+	&& echo "\033[0;32mHADOLINT DONE\033[0m" \
+	|| echo "\033[0;31mHADOLINT ERROR\033[0m"
 
 ###########################################################################
 
