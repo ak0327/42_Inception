@@ -8,4 +8,7 @@ RUN apk add --no-cache \
 WORKDIR /var/www/blog
 EXPOSE 1313
 
-CMD ["hugo", "server", "--bind", "0.0.0.0"]
+#CMD ["hugo", "server", "--bind", "0.0.0.0", "--appendPort=false"]
+CMD ["hugo", "server", "--bind", "0.0.0.0", "--baseURL" , "takira.hugo.com/", "--appendPort=false"]
+#CMD ["hugo", "server", "--bind", "0.0.0.0", "--baseURL" , "takira.hugo.com/", "--appendPort=false"]
+#CMD ["hugo", "server", "--bind", "0.0.0.0"]
