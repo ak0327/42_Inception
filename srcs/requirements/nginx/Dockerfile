@@ -6,35 +6,14 @@ RUN apk add --no-cache \
     nginx=1.24.0-r7 \
     openssl=3.1.4-r5
 
-# nginx
 RUN mkdir -p /var/run/nginx /etc/nginx/http.d
 COPY conf/nginx.conf /etc/nginx/nginx.conf
 COPY conf/http.d/default.conf /etc/nginx/http.d/default.conf
 
-# ssl certificate
-## x509  : self-signed certificate
-## noenc : private key is created it will not be encrypted.
-## newkey: generates RSA key 2048 bits
-## keyout: save path for selfsigned key
-## out   : save path for selfsigned certificate
-## subj  :
-RUN mkdir -p /etc/nginx/ssl
+COPY tools/entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/entrypoint.sh
 
-RUN openssl req \
-    -x509 \
-    -noenc \
-    -newkey rsa:2048 \
-    -out /etc/nginx/ssl/inception.crt \
-    -keyout /etc/nginx/ssl/inception.key \
-    -subj "/C=JP/ST=Tokyo/L=city/O=42Tokyo/CN=takira.42.fr" \
-    && openssl req \
-    -x509 \
-    -noenc \
-    -newkey rsa:2048 \
-    -out /etc/nginx/ssl/inception_hugo.crt \
-    -keyout /etc/nginx/ssl/inception_hugo.key \
-    -subj "/C=JP/ST=Tokyo/L=city/O=42Tokyo/CN=takira.hugo.com"
-
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
 EXPOSE 443
 
