@@ -35,15 +35,16 @@ down:
 
 .PYHONY: network_rm
 network_rm:
-	docker network ls --filter type=custom -q | xargs -r docker network rm
+	docker network ls -q | xargs -r docker network rm
 
 .PYHONY: clean
 clean:
+	make down
 	docker-compose -f $(COMPOSE_FILE) down --volumes --rmi all
 	@if [ -n "$$(docker images -q)" ]; then docker rmi -f $$(docker images -q); fi
 	@if [ -n "$$(docker ps -a -q)" ]; then docker rm -f $$(docker ps -a -q); fi
 	@if [ -n "$$(docker images -f "dangling=true" -q)" ]; then docker rmi -f $$(docker images -f "dangling=true" -q); fi
-	network_rm
+	make network_rm
 
 .PYHONY: re
 re: clean up-d
@@ -102,4 +103,8 @@ exec_dnsmasq:
 .PYHONY: exec_redis
 exec_redis:
 	docker exec -it srcs_redis_1 sh
+
+.PYHONY: exec_hugo
+exec_hugo:
+	docker exec -it srcs_hugo_1 sh
 

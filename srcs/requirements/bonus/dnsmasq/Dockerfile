@@ -5,8 +5,10 @@ RUN apk add --no-cache \
     curl=8.5.0-r0 \
     dnsmasq=2.90-r0
 
-RUN mkdir -p /var/log/dnsmasq
+RUN mkdir -p /etc/dnsmasq /var/log/dnsmasq \
+    && chmod -R 755 /etc/dnsmasq
 COPY conf/dnsmasq.conf /etc/dnsmasq.conf
+COPY conf/hosts-dnsmasq /etc/hosts-dnsmasq
 
 EXPOSE 53 53/udp 53/tcp
 

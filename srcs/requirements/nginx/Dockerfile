@@ -18,14 +18,23 @@ COPY conf/http.d/default.conf /etc/nginx/http.d/default.conf
 ## keyout: save path for selfsigned key
 ## out   : save path for selfsigned certificate
 ## subj  :
-RUN mkdir -p /etc/nginx/ssl \
-    && openssl req \
+RUN mkdir -p /etc/nginx/ssl
+
+RUN openssl req \
     -x509 \
     -noenc \
     -newkey rsa:2048 \
     -out /etc/nginx/ssl/inception.crt \
     -keyout /etc/nginx/ssl/inception.key \
-    -subj "/C=JP/ST=Tokyo/L=city/O=42Tokyo/CN=takira.42.fr"
+    -subj "/C=JP/ST=Tokyo/L=city/O=42Tokyo/CN=takira.42.fr" \
+    && openssl req \
+    -x509 \
+    -noenc \
+    -newkey rsa:2048 \
+    -out /etc/nginx/ssl/inception_hugo.crt \
+    -keyout /etc/nginx/ssl/inception_hugo.key \
+    -subj "/C=JP/ST=Tokyo/L=city/O=42Tokyo/CN=takira.hugo.com"
+
 
 EXPOSE 443
 

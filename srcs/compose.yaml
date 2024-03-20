@@ -20,7 +20,7 @@ services:
       - db_data:/var/lib/mysql
     networks:
       - database_network
-      - wordpress_network
+      - nginx_network
 
   wordpress:
 #    image: wordpress:latest
@@ -58,7 +58,7 @@ services:
     volumes:
       - wp_data:/var/www/html
     networks:
-      - wordpress_network
+      - nginx_network
 
   nginx:
 #    image: nginx:latest
@@ -66,6 +66,8 @@ services:
     build: requirements/nginx
     depends_on:
       wordpress:
+        condition: service_healthy
+      hugo:
         condition: service_healthy
     ports:
       - "443:443"
@@ -78,8 +80,8 @@ services:
     volumes:
       - wp_data:/var/www/html
     networks:
-      wordpress_network:
-        ipv4_address: 192.168.1.10
+      nginx_network:
+        ipv4_address: 192.168.1.10  # takira.42.fr or takira.hugo.com
     dns:
       - 192.168.1.53
 
@@ -101,7 +103,7 @@ services:
       timeout: 10s
       retries: 3
     networks:
-      wordpress_network:
+      nginx_network:
         ipv4_address: 192.168.1.53
 
   adminer:
@@ -133,18 +135,34 @@ services:
       retries: 5
     restart: always
     networks:
-      - wordpress_network
+      - nginx_network
 #
 #  ftp:
 #    networks:
-#      - wordpress_network
+#      - nginx_network
+
+  hugo:
+    image: hugo:inception
+    build: requirements/bonus/hugo
+    ports:
+      - "1313:1313"
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail localhost:1313 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: always
+    volumes:
+      - /var/www/blog:/var/www/blog
+    networks:
+      - nginx_network
 
 volumes:
   db_data:
   wp_data:
 
 networks:
-  wordpress_network:
+  nginx_network:
     ipam:
       config:
         - subnet: 192.168.1.0/24  # 192.168.1.1~192.168.1.254
