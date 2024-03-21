@@ -57,7 +57,7 @@ add_wp() {
   WP_ADMIN_USER=${LOGIN}
   WP_ADMIN_PASSWORD=${LOGIN}_pass
   WP_ADMIN_EMAIL=${LOGIN}@email.com
-  WP_EDITOR_USER=editor_user
+  WP_EDITOR_USER=editor
   WP_EDITOR_PASSWORD=editor_pass
   WP_EDITOR_EMAIL=editor@email.com
   '
