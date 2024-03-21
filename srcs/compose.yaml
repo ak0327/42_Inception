@@ -1,4 +1,4 @@
-version: '3'
+version: '3.4'
 
 services:
   mariadb:
@@ -11,6 +11,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+      start_period: 30s
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?MYSQL_ROOT_PASSWORD is not set}
       MYSQL_DB_NAME: ${MYSQL_DB_NAME:?MYSQL_DB_NAME is not set}
@@ -37,6 +38,7 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+      start_period: 30s
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?MYSQL_ROOT_PASSWORD is not set}
       MYSQL_DB_NAME: ${MYSQL_DB_NAME:?MYSQL_DB_NAME is not set}
@@ -77,9 +79,11 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+      start_period: 30s
     volumes:
       - wp_data:/var/www/html
       - hugo_data:/var/www/blog
+      - /var/log/inception/nginx:/var/log/nginx
     networks:
       nginx_network:
         ipv4_address: ${WEB_PAGE_IP:?WEB_PAGE_IP is not set}  # takira.42.fr or takira.hugo.com
@@ -105,6 +109,8 @@ services:
       - "${HOST_IP}:53:53/tcp"
     cap_add:
       - NET_ADMIN
+    volumes:
+      - /var/log/inception/dnsmasq:/var/log/dnsmasq
     restart: always
     healthcheck:
       test: ["CMD", "nslookup", "takira.42.fr", "localhost"]
@@ -129,6 +135,7 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+      start_period: 30s
     networks:
       - database_network
 
@@ -142,13 +149,31 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+      start_period: 30s
     restart: always
     networks:
       - nginx_network
-#
-#  ftp:
-#    networks:
-#      - nginx_network
+
+  ftpd:
+    image: ftpd:inception
+    build: requirements/bonus/ftpd
+    ports:
+      - "21:21"
+      - "30000-30009:30000-30009"
+    volumes:
+      - wp_data:/var/www/html
+      - /var/log/inception/pure-ftpd:/var/log/pure-ftpd
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "echo -e 'QUIT\r\n' | nc localhost 21 | grep '220'"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    environment:
+      PUBLICHOST: "localhost"
+      FTP_USER: ${MYSQL_USER:?MYSQL_USER is not set}
+      FTP_PASSWORD: ${MYSQL_PASSWORD:?MYSQL_PASSWORD is not set}
 
   hugo:
     image: hugo:inception
@@ -160,6 +185,7 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
+      start_period: 30s
     restart: always
     volumes:
       - hugo_data:/var/www/blog
@@ -185,6 +211,7 @@ volumes:
       o: bind
       device: ${HUGO_VOLUME_DIR:?HUGO_VOLUME_DIR is not set}
       type: anything_is_ok
+
 
 networks:
   nginx_network:

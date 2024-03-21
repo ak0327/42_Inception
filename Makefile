@@ -51,6 +51,7 @@ clean:
 	@if [ -n "$$(docker ps -a -q)" ]; then docker rm -f $$(docker ps -a -q); fi
 	@if [ -n "$$(docker images -f "dangling=true" -q)" ]; then docker rmi -f $$(docker images -f "dangling=true" -q); fi
 	make network_rm
+	docker volume prune -f
 
 .PYHONY: re
 re: clean up-d
@@ -73,6 +74,9 @@ log_nginx:
 log_mariadb:
 	docker-compose -f $(COMPOSE_FILE) logs mariadb
 
+.PYHONY: log_ftpd
+log_ftpd:
+	docker-compose -f $(COMPOSE_FILE) logs ftpd
 
 .PYHONY: ps
 ps:
@@ -119,4 +123,9 @@ exec_redis:
 .PYHONY: exec_hugo
 exec_hugo:
 	docker exec -it srcs_hugo_1 sh
+
+.PYHONY: exec_ftpd
+exec_ftpd:
+	docker exec -it srcs_ftpd_1 sh
+
 
