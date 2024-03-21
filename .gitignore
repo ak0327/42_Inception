@@ -13,5 +13,5 @@
 
 !.hadolint.yaml
 
-#.env
+.env
 .idea
