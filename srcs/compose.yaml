@@ -12,10 +12,10 @@ services:
       timeout: 5s
       retries: 5
     environment:
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DB_NAME=wp_db
-      - MYSQL_USER=db_user
-      - MYSQL_PASSWORD=db_pass
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?MYSQL_ROOT_PASSWORD is not set}
+      MYSQL_DB_NAME: ${MYSQL_DB_NAME:?MYSQL_DB_NAME is not set}
+      MYSQL_USER: ${MYSQL_USER:?MYSQL_USER is not set}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?MYSQL_PASSWORD is not set}
     volumes:
       - db_data:/var/lib/mysql
     networks:
@@ -38,23 +38,23 @@ services:
       timeout: 10s
       retries: 3
     environment:
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DB_NAME=wp_db
-      - MYSQL_USER=db_user
-      - MYSQL_PASSWORD=db_pass
-      - WP_PATH=/var/www/html
-      - WP_DB_HOST=mariadb:3306
-      - WP_DB_NAME=wp_db
-      - WP_DB_USER=db_user
-      - WP_DB_PASSWORD=db_pass
-      - WP_URL=takira.42.fr
-      - WP_TITLE=wp_title
-      - WP_ADMIN_USER=wp_admin
-      - WP_ADMIN_PASSWORD=wp_admin_pass
-      - WP_ADMIN_EMAIL=ad_admin@email.com
-      - WP_EDITOR_USER=wp_editor_user
-      - WP_EDITOR_PASSWORD=wp_editor_pass
-      - WP_EDITOR_EMAIL=ep_editor@email.com
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?MYSQL_ROOT_PASSWORD is not set}
+      MYSQL_DB_NAME: ${MYSQL_DB_NAME:?MYSQL_DB_NAME is not set}
+      MYSQL_USER: ${MYSQL_USER:?MYSQL_USER is not set}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?MYSQL_PASSWORD is not set}
+      WP_PATH: ${WP_PATH:?WP_PATH is not set}
+      WP_DB_HOST: ${WP_DB_HOST:?WP_DB_HOST is not set}
+      WP_DB_NAME: ${WP_DB_NAME:?WP_DB_NAME is not set}
+      WP_DB_USER: ${WP_DB_USER:?WP_DB_USER is not set}
+      WP_DB_PASSWORD: ${WP_DB_PASSWORD:?WP_DB_PASSWORD is not set}
+      WP_URL: ${WP_URL:?WP_URL is not set}
+      WP_TITLE: ${WP_TITLE:?WP_TITLE is not set}
+      WP_ADMIN_USER: ${WP_ADMIN_USER:?WP_ADMIN_USER is not set}
+      WP_ADMIN_PASSWORD: ${WP_ADMIN_PASSWORD:?WP_ADMIN_PASSWORD is not set}
+      WP_ADMIN_EMAIL: ${WP_ADMIN_EMAIL:?WP_ADMIN_EMAIL is not set}
+      WP_EDITOR_USER: ${WP_EDITOR_USER:?WP_EDITOR_USER is not set}
+      WP_EDITOR_PASSWORD: ${WP_EDITOR_PASSWORD:?WP_EDITOR_PASSWORD is not set}
+      WP_EDITOR_EMAIL: ${WP_EDITOR_EMAIL:?WP_EDITOR_EMAIL is not set}
     volumes:
       - wp_data:/var/www/html
     networks:
@@ -79,11 +79,20 @@ services:
       retries: 3
     volumes:
       - wp_data:/var/www/html
+      - hugo_data:/var/www/blog
     networks:
       nginx_network:
-        ipv4_address: 192.168.1.10  # takira.42.fr or takira.hugo.com
+        ipv4_address: ${WEB_PAGE_IP:?WEB_PAGE_IP is not set}  # takira.42.fr or takira.hugo.com
+    environment:
+      COUNTY: ${COUNTY:?COUNTY is not set}
+      STATE: ${STATE:?STATE is not set}
+      ORGANIZATION: ${ORGANIZATION:?ORGANIZATION is not set}
+      CRT_DIR: ${CRT_DIR:?CRT_DIR is not set}
+      RSA_KEY_BITS: ${RSA_KEY_BITS:?RSA_KEY_BITS is not set}
+      WP_DOMAIN: ${WP_DOMAIN:?WP_DOMAIN is not set}
+      HUGO_DOMAIN: ${HUGO_DOMAIN:?HUGO_DOMAIN is not set}
     dns:
-      - 192.168.1.53
+      - ${DNSMASQ_IP:?DNSMASQ_IP is not set}
 
   dnsmasq:
     image: dnsmasq:inception
@@ -92,19 +101,19 @@ services:
       wordpress:
         condition: service_healthy
     ports:
-      - "10.0.2.15:53:53/udp"  # todo: env
-      - "10.0.2.15:53:53/tcp"  # todo: env
+      - "${HOST_IP}:53:53/udp"
+      - "${HOST_IP}:53:53/tcp"
     cap_add:
       - NET_ADMIN
     restart: always
     healthcheck:
-      test: ["CMD", "nslookup", "takira.42.fr", "127.0.0.1"]
+      test: ["CMD", "nslookup", "takira.42.fr", "localhost"]
       interval: 30s
       timeout: 10s
       retries: 3
     networks:
       nginx_network:
-        ipv4_address: 192.168.1.53
+        ipv4_address: ${DNSMASQ_IP:?DNSMASQ_IP is not set}
 
   adminer:
     image: adminer:inception
@@ -127,7 +136,7 @@ services:
     image: redis:inception
     build: requirements/bonus/redis
     ports:
-      - "10.0.2.15:6379:6379"
+      - "${HOST_IP}:6379:6379"
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
@@ -153,17 +162,33 @@ services:
       retries: 5
     restart: always
     volumes:
-      - /var/www/blog:/var/www/blog
+      - hugo_data:/var/www/blog
     networks:
       - nginx_network
 
 volumes:
   db_data:
+    driver: local
+    driver_opts:
+      o: bind
+      device: ${DB_VOLUME_DIR:?DB_VOLUME_DIR is not set}
+      type: anything_is_ok
   wp_data:
+    driver: local
+    driver_opts:
+      o: bind
+      device: ${WP_VOLUME_DIR:?WP_VOLUME_DIR is not set}
+      type: anything_is_ok
+  hugo_data:
+    driver: local
+    driver_opts:
+      o: bind
+      device: ${HUGO_VOLUME_DIR:?HUGO_VOLUME_DIR is not set}
+      type: anything_is_ok
 
 networks:
   nginx_network:
     ipam:
       config:
-        - subnet: 192.168.1.0/24  # 192.168.1.1~192.168.1.254
+        - subnet: ${NGINX_NETWORK_SUBNET:?NGINX_NETWORK_SUBNET is not set}
   database_network:

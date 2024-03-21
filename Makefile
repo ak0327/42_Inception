@@ -1,11 +1,17 @@
+SRCS_DIR = srcs
+
 COMPOSE_FILE = srcs/compose.yaml
 
-DIRS = srcs/requirements/mariadb \
+DOCKER_DIRS = srcs/requirements/mariadb \
        srcs/requirements/nginx \
        srcs/requirements/wordpress \
        srcs/requirements/bonus/adminer
 
-DOCKER_FILES = $(addsuffix /Dockerfile, $(DIRS))
+DOCKER_FILES = $(addsuffix /Dockerfile, $(DOCKER_DIRS))
+
+ENV_SH = srcs/make_env.sh
+ENV_PATH = srcs/.env
+
 
 ###########################################################################
 
@@ -14,11 +20,11 @@ all: start
 ###########################################################################
 
 .PYHONY: up
-up:
+up: env
 	docker-compose -f $(COMPOSE_FILE) up --build
 
 .PYHONY: start
-start:
+start: env
 	docker-compose -f $(COMPOSE_FILE) up -d --build
 
 .PYHONY: stop
@@ -48,6 +54,10 @@ clean:
 
 .PYHONY: re
 re: clean up-d
+
+.PYHONY: env
+env:
+	@./$(ENV_SH) $(ENV_PATH)
 
 ###########################################################################
 

@@ -1,41 +1,11 @@
-# server {
-# 	listen 443 ssl;
-# 	listen [::]:443 ssl;
-# 	server_name takira.42.fr;
-#
-# 	# SSL
-# 	ssl_protocols TLSv1.2 TLSv1.3;
-# 	ssl_certificate /etc/nginx/ssl/inception.crt;
-# 	ssl_certificate_key /etc/nginx/ssl/inception.key;
-#
-#     root /var/www/html;
-#
-# 	location / {
-# 	    index index.php index.html index.htm;
-#         try_files $uri $uri/ /index.php?$args =404;
-# 	}
-#
-#     location ~ \.php$ {
-#         fastcgi_pass wordpress:9000;
-#         include /etc/nginx/fastcgi.conf;
-#     }
-# }
-
-# server {
-#     listen          80  default_server;
-#     listen          [::]:80  default_server;
-#     server_name     localhost;
-#     return          301  https://$host$request_uri;
-# }
-
 # takira.42.fr
 server {
 	listen          443  ssl;
 	listen          [::]:443  ssl;
-	server_name     takira.42.fr;
+	server_name     ${WP_DOMAIN};
 
-	ssl_certificate     /etc/nginx/ssl/inception.crt;
-	ssl_certificate_key /etc/nginx/ssl/inception.key;
+	ssl_certificate     ${CRT_DIR}/inception.crt;
+	ssl_certificate_key ${CRT_DIR}/inception.key;
 	ssl_protocols       TLSv1.2 TLSv1.3;
 
 	root            /var/www/html;
@@ -63,27 +33,19 @@ server {
 
 # takira.hugo.com
 server {
-	listen          80;
-	listen          [::]:80;
-
 	listen          443  ssl;
 	listen          [::]:443  ssl;
-	server_name     takira.hugo.com;
+	server_name     ${HUGO_DOMAIN};
 
-
-
-	ssl_certificate     /etc/nginx/ssl/inception_hugo.crt;
-	ssl_certificate_key /etc/nginx/ssl/inception_hugo.key;
+	ssl_certificate     ${CRT_DIR}/inception_hugo.crt;
+	ssl_certificate_key ${CRT_DIR}/inception_hugo.key;
 	ssl_protocols       TLSv1.2 TLSv1.3;
 
     root    /var/www/blog/public;
 
     location / {
-#         sub_filter_once off;
-#         sub_filter 'http://' 'https://';
         proxy_pass http://hugo:1313;
         proxy_set_header Host $host;
-#         proxy_set_header Host takira.hugo.com;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;

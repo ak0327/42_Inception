@@ -1,6 +1,6 @@
 #!/bin/sh
 
-mkdir -p /etc/nginx/ssl
+mkdir -p ${CRT_DIR}
 
 # ssl certificate
 ## x509  : self-signed certificate
@@ -12,18 +12,23 @@ mkdir -p /etc/nginx/ssl
 openssl req \
         -x509 \
         -noenc \
-        -newkey rsa:2048 \
-        -out /etc/nginx/ssl/inception.crt \
-        -keyout /etc/nginx/ssl/inception.key \
-        -subj "/C=JP/ST=Tokyo/L=city/O=42Tokyo/CN=takira.42.fr" > /dev/null
+        -newkey rsa:${RSA_KEY_BITS} \
+        -out ${CRT_DIR}/inception.crt \
+        -keyout ${CRT_DIR}/inception.key \
+        -subj "/C=${COUNTRY}/ST=${STATE}/O=${ORGANIZATION}/CN=${WP_DOMAIN}"
 
 openssl req \
         -x509 \
         -noenc \
-        -newkey rsa:2048 \
-        -out /etc/nginx/ssl/inception_hugo.crt \
-        -keyout /etc/nginx/ssl/inception_hugo.key \
-        -subj "/C=JP/ST=Tokyo/L=city/O=42Tokyo/CN=takira.hugo.com" > /dev/null
+        -newkey rsa:${RSA_KEY_BITS} \
+        -out ${CRT_DIR}/inception_hugo.crt \
+        -keyout ${CRT_DIR}/inception_hugo.key \
+        -subj "/C=${COUNTRY}/ST=${STATE}/O=${ORGANIZATION}/CN=${HUGO_DOMAIN}"
+
+
+envsubst '${WP_DOMAIN},${HUGO_DOMAIN},${CRT_DIR}' \
+          < /etc/nginx/http.d/default.conf.template \
+          > /etc/nginx/http.d/default.conf
 
 exec "$@"
 
