@@ -19,6 +19,7 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD:?MYSQL_PASSWORD is not set}
     volumes:
       - db_data:/var/lib/mysql
+      - /var/log/inception/mysql:/var/log/mysql
     networks:
       - database_network
       - nginx_network
@@ -59,6 +60,7 @@ services:
       WP_EDITOR_EMAIL: ${WP_EDITOR_EMAIL:?WP_EDITOR_EMAIL is not set}
     volumes:
       - wp_data:/var/www/html
+      - /var/log/inception/wordpress:/var/www/html/wp-content/logs
     networks:
       - nginx_network
 
