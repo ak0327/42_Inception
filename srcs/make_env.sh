@@ -113,7 +113,7 @@ main() {
   echo "make: $env_path"
   echo "host_ip: ${host_ip}"
 
-  rm -f $env_path
+  rm -f ${env_path:?}
 
   add_login $env_path
   add_volume $env_path

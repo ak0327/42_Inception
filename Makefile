@@ -21,7 +21,7 @@ all: start
 
 .PYHONY: up
 up: env
-	mkdir -p ${DB_VOLUME_DIR} ${WP_VOLUME_DIR} ${HUGO_VOLUME_DIR}
+	mkdir -p ${DB_VOLUME_DIR:?} ${WP_VOLUME_DIR:?} ${HUGO_VOLUME_DIR:?}
 	docker-compose -f $(COMPOSE_FILE) up --build
 
 .PYHONY: start
@@ -55,7 +55,7 @@ fclean: clean init_volume
 
 .PYHONY: init_volume
 init_volume:
-	sudo rm -rf ${DB_VOLUME_DIR}/* ${WP_VOLUME_DIR}/*
+	sudo rm -rf ${DB_VOLUME_DIR:?}/* ${WP_VOLUME_DIR:?}/*
 
 .PYHONY: re
 re: fclean start
