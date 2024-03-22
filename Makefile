@@ -1,5 +1,3 @@
-include srcs/.env
-
 SRCS_DIR = srcs
 
 COMPOSE_FILE = srcs/docker-compose.yml
