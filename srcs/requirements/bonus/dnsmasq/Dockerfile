@@ -8,12 +8,7 @@ RUN apk add --no-cache \
 RUN mkdir -p /etc/dnsmasq /var/log/dnsmasq \
     && chmod -R 755 /etc/dnsmasq
 COPY conf/dnsmasq.conf /etc/dnsmasq.conf
-#COPY conf/hosts-dnsmasq /etc/hosts-dnsmasq
-
-COPY tools/entrypoint.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/entrypoint.sh
-
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+COPY conf/hosts-dnsmasq /etc/hosts-dnsmasq
 
 EXPOSE 53 53/udp 53/tcp
 
