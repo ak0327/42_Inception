@@ -12,6 +12,7 @@
 !srcs/**
 
 !.hadolint.yaml
+!README.md
 
 .env
 .idea
