@@ -8,7 +8,6 @@ RUN apk add --no-cache \
     openssl=3.1.4-r5
 
 RUN mkdir -p /var/run/nginx /etc/nginx/http.d
-COPY conf/nginx.conf /etc/nginx/nginx.conf
 COPY conf/http.d/default.conf.template /etc/nginx/http.d/default.conf.template
 
 COPY tools/entrypoint.sh /usr/local/bin/
