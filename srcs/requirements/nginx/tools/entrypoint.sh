@@ -3,6 +3,7 @@
 mkdir -p ${CRT_DIR}
 
 # ssl certificate
+## wordpress page
 openssl req \
         -x509 \
         -noenc \
@@ -11,6 +12,7 @@ openssl req \
         -keyout ${CRT_DIR}/inception.key \
         -subj "/C=${COUNTRY}/ST=${STATE}/O=${ORGANIZATION}/CN=${WP_DOMAIN}" > /dev/null 2>&1
 
+## hugo page
 openssl req \
         -x509 \
         -noenc \

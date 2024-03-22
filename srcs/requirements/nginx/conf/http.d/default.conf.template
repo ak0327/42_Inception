@@ -6,7 +6,7 @@ server {
 
 	ssl_certificate     ${CRT_DIR}/inception.crt;
 	ssl_certificate_key ${CRT_DIR}/inception.key;
-	ssl_protocols       TLSv1.2 TLSv1.3;
+	ssl_protocols       TLSv1.2  TLSv1.3;
 
 	root            /var/www/html;
     index           index.php;
@@ -20,11 +20,11 @@ server {
         if (!-f $document_root$fastcgi_script_name) {
             return  404;
         }
-        fastcgi_param   HTTP_PROXY "";
+        fastcgi_param   HTTP_PROXY  "";
         fastcgi_pass    wordpress:9000;
         fastcgi_index   index.php;
         include         fastcgi_params;
-        fastcgi_param   SCRIPT_FILENAME   $document_root$fastcgi_script_name;
+        fastcgi_param   SCRIPT_FILENAME  $document_root$fastcgi_script_name;
 	}
 	# Connecting NGINX to PHP FPM
 	# https://www.nginx.com/resources/wiki/start/topics/examples/phpfcgi/#connecting-nginx-to-php-fpm
@@ -39,16 +39,16 @@ server {
 
 	ssl_certificate     ${CRT_DIR}/inception_hugo.crt;
 	ssl_certificate_key ${CRT_DIR}/inception_hugo.key;
-	ssl_protocols       TLSv1.2 TLSv1.3;
+	ssl_protocols       TLSv1.2  TLSv1.3;
 
     root    /var/www/blog/public;
 
     location / {
-        proxy_pass http://hugo:1313;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_pass          http://hugo:1313;
+        proxy_set_header    Host  $host;
+        proxy_set_header    X-Real-IP  $remote_addr;
+        proxy_set_header    X-Forwarded-For  $proxy_add_x_forwarded_for;
+        proxy_set_header    X-Forwarded-Proto  $scheme;
     }
 
 }

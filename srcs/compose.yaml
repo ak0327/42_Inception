@@ -1,8 +1,8 @@
 version: '3.4'
 
+# services ---------------------------------------------------------------------
 services:
   mariadb:
-#    image: mariadb:latest
     image: mariadb:inception
     build: requirements/mariadb
     restart: always
@@ -25,7 +25,6 @@ services:
       - nginx_network
 
   wordpress:
-#    image: wordpress:latest
     image: wordpress:inception
     build: requirements/wordpress
     depends_on:
@@ -37,10 +36,7 @@ services:
         condition: service_healthy
     restart: always
     healthcheck:
-#      test: ["CMD", "php", "--run", "echo 'PHP is working';"]
       test: ["CMD-SHELL", "php --run \"echo 'PHP is working';\" && redis-cli -h redis ping || exit 1"]
-#      test: ["CMD-SHELL", "curl --fail --insecure https://$$WP_DOMAIN && redis-cli -h redis ping || exit 1"]
-#      test: ["CMD", "php", "--run", "echo 'PHP is working';"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -50,7 +46,7 @@ services:
       MYSQL_DB_NAME: ${MYSQL_DB_NAME:?MYSQL_DB_NAME is not set}
       MYSQL_USER: ${MYSQL_USER:?MYSQL_USER is not set}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD:?MYSQL_PASSWORD is not set}
-      WP_PATH: ${WP_PATH:?WP_PATH is not set}
+      WP_CONTAINER_PATH: ${WP_CONTAINER_PATH:?WP_CONTAINER_PATH is not set}
       WP_DB_HOST: ${WP_DB_HOST:?WP_DB_HOST is not set}
       WP_DB_NAME: ${WP_DB_NAME:?WP_DB_NAME is not set}
       WP_DB_USER: ${WP_DB_USER:?WP_DB_USER is not set}
@@ -64,13 +60,12 @@ services:
       WP_EDITOR_PASSWORD: ${WP_EDITOR_PASSWORD:?WP_EDITOR_PASSWORD is not set}
       WP_EDITOR_EMAIL: ${WP_EDITOR_EMAIL:?WP_EDITOR_EMAIL is not set}
     volumes:
-      - wp_data:/var/www/html
+      - wp_data:${WP_CONTAINER_PATH:?WP_CONTAINER_PATH is not set}
       - /var/log/inception/wordpress:/var/www/html/wp-content/logs
     networks:
       - nginx_network
 
   nginx:
-#    image: nginx:latest
     image: nginx:inception
     build: requirements/nginx
     depends_on:
@@ -90,8 +85,8 @@ services:
       retries: 3
       start_period: 30s
     volumes:
-      - wp_data:/var/www/html
-      - hugo_data:/var/www/blog
+      - wp_data:${WP_CONTAINER_PATH:?WP_CONTAINER_PATH is not set}
+      - hugo_data:${HUGO_CONTAINER_PATH:?HUGO_CONTAINER_PATH is not set}
       - /var/log/inception/nginx:/var/log/nginx
     networks:
       nginx_network:
@@ -166,7 +161,6 @@ services:
     ports:
       - "21:21"
       - "30000:30000"
-#      - "30000-30009:30000-30009"
     volumes:
       - wp_data:/var/www/html
       - /var/log/inception/pure-ftpd:/var/log/pure-ftpd
@@ -195,10 +189,11 @@ services:
       start_period: 30s
     restart: always
     volumes:
-      - hugo_data:/var/www/blog
+      - hugo_data:${HUGO_CONTAINER_PATH:?HUGO_CONTAINER_PATH is not set}
     networks:
       - nginx_network
 
+# volumes ----------------------------------------------------------------------
 volumes:
   db_data:
     driver: local
@@ -220,6 +215,7 @@ volumes:
       type: anything_is_ok
 
 
+# networks ---------------------------------------------------------------------
 networks:
   nginx_network:
     ipam:

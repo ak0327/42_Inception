@@ -20,7 +20,7 @@ RUN apk add --no-cache \
     php81-tokenizer=8.1.27-r0 \
     php81-xml=8.1.27-r0 \
     php81-xmlreader=8.1.27-r0 \
-    redis=7.0.15-r0
+    redis=7.0.15-r0  # for redis-cli test
 
 # WP-CLI
 RUN curl --silent -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
@@ -28,10 +28,10 @@ RUN curl --silent -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/ph
     && mv wp-cli.phar /usr/local/bin/wp-cli.phar
 # wp -> wp-cli.phar https://github.com/wp-cli/config-command/issues/31
 
-ENV WP_PATH="/var/www/html"
-RUN mkdir -p "${WP_PATH}" /var/www/html/wp-content/logs \
-    && chown -R nobody:nobody "${WP_PATH}" \
-    && chmod -R 755 "${WP_PATH}"
+ENV WP_CONTAINER_PATH="/var/www/html"
+RUN mkdir -p "${WP_CONTAINER_PATH}" /var/www/html/wp-content/logs \
+    && chown -R nobody:nobody "${WP_CONTAINER_PATH}" \
+    && chmod -R 755 "${WP_CONTAINER_PATH}"
 
 COPY conf/www.conf /etc/php81/php-fpm.d/www.conf
 

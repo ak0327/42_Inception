@@ -9,7 +9,6 @@ add_login() {
   WP_DOMAIN=${LOGIN}.42.fr
   HUGO_DOMAIN=${LOGIN}.hugo.com
   '
-
   echo "$content" >> "$env_path"
 }
 
@@ -22,8 +21,10 @@ add_volume() {
   DB_VOLUME_DIR=${VOLUME_DIR}/mariadb
   WP_VOLUME_DIR=${VOLUME_DIR}/wordpress
   HUGO_VOLUME_DIR=${VOLUME_DIR}/hugo
-  '
 
+  WP_CONTAINER_PATH=/var/www/html
+  HUGO_CONTAINER_PATH=/var/www/blog
+  '
   echo "$content" >> "$env_path"
 }
 
@@ -37,7 +38,6 @@ add_db() {
   MYSQL_USER=db_user
   MYSQL_PASSWORD=db_pass
   '
-
   echo "$content" >> "$env_path"
 }
 
@@ -46,7 +46,6 @@ add_wp() {
   local env_path=$1
 
   content='# Wordpress
-  WP_PATH=/var/www/html
   WP_DB_HOST=mariadb:3306
   WP_DB_NAME=wp_db
   WP_DB_USER=db_user
@@ -61,7 +60,6 @@ add_wp() {
   WP_EDITOR_PASSWORD=editor_pass
   WP_EDITOR_EMAIL=editor@email.com
   '
-
   echo "$content" >> "$env_path"
 }
 
@@ -76,7 +74,6 @@ add_ip() {
   WEB_PAGE_IP=192.168.1.10
   HOST_IP=$host_ip
   "
-
   echo "$content" >> "$env_path"
 }
 
@@ -91,7 +88,6 @@ add_cert() {
   ORGANIZATION=42Tokyo
   CRT_DIR=/etc/nginx/ssh
   '
-
   echo "$content" >> "$env_path"
 }
 
