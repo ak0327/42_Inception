@@ -1,3 +1,5 @@
+include srcs/.env
+
 SRCS_DIR = srcs
 
 COMPOSE_FILE = srcs/compose.yaml
@@ -21,6 +23,7 @@ all: start
 
 .PYHONY: up
 up: env
+	mkdir -p ${DB_VOLUME_DIR} ${WP_VOLUME_DIR} ${HUGO_VOLUME_DIR}
 	docker-compose -f $(COMPOSE_FILE) up --build
 
 .PYHONY: start
@@ -39,22 +42,25 @@ restart:
 down:
 	docker-compose -f $(COMPOSE_FILE) down
 
-.PYHONY: network_rm
-network_rm:
-	docker network ls --filter type=custom -q | xargs -r docker network rm
-
 .PYHONY: clean
 clean:
-	make down
-	docker-compose -f $(COMPOSE_FILE) down --volumes --rmi all
-	@if [ -n "$$(docker images -q)" ]; then docker rmi -f $$(docker images -q); fi
+	@docker-compose -f $(COMPOSE_FILE) down --volumes --rmi all
+	@if [ -n "$$(docker ps -a -q)" ]; then docker stop $$(docker ps -a -q); fi
 	@if [ -n "$$(docker ps -a -q)" ]; then docker rm -f $$(docker ps -a -q); fi
+	@if [ -n "$$(docker images -q)" ]; then docker rmi -f $$(docker images -q); fi
 	@if [ -n "$$(docker images -f "dangling=true" -q)" ]; then docker rmi -f $$(docker images -f "dangling=true" -q); fi
-	make network_rm
-	docker volume prune -f
+	@docker network ls --filter type=custom -q | xargs -r docker network rm
+	@docker volume prune -f
+
+.PYHONY: fclean
+fclean: clean init_volume
+
+.PYHONY: init_volume
+init_volume:
+	sudo rm -rf ${DB_VOLUME_DIR}/* ${WP_VOLUME_DIR}/*
 
 .PYHONY: re
-re: clean up-d
+re: fclean start
 
 .PYHONY: env
 env:
@@ -69,6 +75,10 @@ logs:
 .PYHONY: log_nginx
 log_nginx:
 	docker-compose -f $(COMPOSE_FILE) logs nginx
+
+.PYHONY: log_wp
+log_wp:
+	docker-compose -f $(COMPOSE_FILE) logs wordpress
 
 .PYHONY: log_mariadb
 log_mariadb:

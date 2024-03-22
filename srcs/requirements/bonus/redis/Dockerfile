@@ -6,4 +6,4 @@ RUN apk add --no-cache \
 
 EXPOSE 6379
 
-CMD ["redis-server"]
+CMD ["redis-server", "--bind", "0.0.0.0", "--protected-mode", "no"]

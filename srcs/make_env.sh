@@ -86,7 +86,7 @@ add_cert() {
 
   content='# Cert
   RSA_KEY_BITS=2048
-  COUNTY=JP
+  COUNTRY=JP
   STATE=Tokyo
   ORGANIZATION=42Tokyo
   CRT_DIR=/etc/nginx/ssh
