@@ -22,6 +22,7 @@ add_volume() {
   WP_VOLUME_DIR=${VOLUME_DIR}/wordpress
   HUGO_VOLUME_DIR=${VOLUME_DIR}/hugo
 
+  DB_CONTAINER_PATH=/var/lib/mysql
   WP_CONTAINER_PATH=/var/www/html
   HUGO_CONTAINER_PATH=/var/www/blog
   '

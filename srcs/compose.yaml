@@ -17,8 +17,9 @@ services:
       MYSQL_DB_NAME: ${MYSQL_DB_NAME:?MYSQL_DB_NAME is not set}
       MYSQL_USER: ${MYSQL_USER:?MYSQL_USER is not set}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD:?MYSQL_PASSWORD is not set}
+      DB_CONTAINER_PATH: ${DB_CONTAINER_PATH:?DB_CONTAINER_PATH is not set}
     volumes:
-      - db_data:/var/lib/mysql
+      - db_data:${DB_CONTAINER_PATH:?DB_CONTAINER_PATH is not set}
       - /var/log/inception/mysql:/var/log/mysql
     networks:
       - database_network
