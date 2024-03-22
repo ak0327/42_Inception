@@ -1,10 +1,8 @@
 #!/bin/sh
+
 set -eu -o pipefail
 
-
-if [ ! -f "${WP_CONTAINER_PATH}/wp-config.php" ]; then
-    wp-cli.phar core download --path="${WP_CONTAINER_PATH}" # --allow-root
-
+setting_db() {
     wp-cli.phar config create \
       --dbname="${MYSQL_DB_NAME}" \
       --dbuser="${MYSQL_USER}" \
@@ -13,7 +11,10 @@ if [ ! -f "${WP_CONTAINER_PATH}/wp-config.php" ]; then
       --path="${WP_CONTAINER_PATH}"
       #      --allow-root
     # config create: https://developer.wordpress.org/cli/commands/config/create/
+}
 
+
+setting_admin() {
     wp-cli.phar core install \
       --url="${WP_URL}" \
       --title="${WP_TITLE}" \
@@ -23,7 +24,10 @@ if [ ! -f "${WP_CONTAINER_PATH}/wp-config.php" ]; then
       --path="${WP_CONTAINER_PATH}" \
 #      --allow-root
     # core install: https://developer.wordpress.org/cli/commands/core/install/
+}
 
+
+setting_editor() {
     wp-cli.phar user create \
       "${WP_EDITOR_USER}" \
       "${WP_EDITOR_EMAIL}" \
@@ -32,7 +36,10 @@ if [ ! -f "${WP_CONTAINER_PATH}/wp-config.php" ]; then
       --path="${WP_CONTAINER_PATH}"
 #      --allow-root
     # user create: https://developer.wordpress.org/cli/commands/user/create/
+}
 
+
+setting_redis() {
     # setting for redis cache
     wp-cli.phar config set WP_REDIS_HOST "redis" --type=constant --path="${WP_CONTAINER_PATH}"
     wp-cli.phar config set WP_REDIS_PORT "6379" --type=constant --path="${WP_CONTAINER_PATH}"
@@ -48,10 +55,26 @@ if [ ! -f "${WP_CONTAINER_PATH}/wp-config.php" ]; then
     wp-cli.phar config set WP_DEBUG true --raw --type=constant --path="${WP_CONTAINER_PATH}"
     wp-cli.phar config set WP_DEBUG_LOG true --raw --type=constant --path="${WP_CONTAINER_PATH}"
     wp-cli.phar config set WP_DEBUG_DISPLAY true --raw --type=constant --path="${WP_CONTAINER_PATH}"
+}
 
-fi
 
-chown -R nobody:nobody "${WP_CONTAINER_PATH}"
-chmod -R 755 "${WP_CONTAINER_PATH}"
+main() {
 
+  if [ ! -f "${WP_CONTAINER_PATH}/wp-config.php" ]; then
+      wp-cli.phar core download --path="${WP_CONTAINER_PATH}" # --allow-root
+
+      setting_db
+      setting_admin
+      setting_editor
+
+      setting_redis
+  fi
+
+  chown -R nobody:nobody "${WP_CONTAINER_PATH}"
+  chmod -R 755 "${WP_CONTAINER_PATH}"
+
+}
+
+
+main
 exec "$@"

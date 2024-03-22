@@ -14,7 +14,7 @@ RUN apk add --no-cache \
     php81-mbstring=8.1.27-r0 \
     php81-mysqli=8.1.27-r0 \
     php81-openssl=8.1.27-r0 \
-    php81-pecl-redis \
+    php81-pecl-redis=8.1.27-r0 \
     php81-phar=8.1.27-r0 \
     php81-session=8.1.27-r0 \
     php81-tokenizer=8.1.27-r0 \
