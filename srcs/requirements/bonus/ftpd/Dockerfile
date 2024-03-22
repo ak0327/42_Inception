@@ -8,15 +8,13 @@ RUN apk add --no-cache \
 RUN mkdir -p /var/www/html /etc/pure-ftpd/conf /var/log/pure-ftpd \
     && chmod 755 /var/www/html
 
-RUN echo "no" > /etc/pure-ftpd/conf/NoAnonymous
-
-RUN echo "30000" > /etc/pure-ftpd/conf/PassivePortRange \
-    && echo "yes" > /etc/pure-ftpd/conf/ChrootEveryone
-
 COPY tools/entrypoint.sh /usr/local/bin
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
-# O: set as invalid SSL/TLS
-CMD ["/usr/sbin/pure-ftpd", "-j", "-Y", "O", "-p", "30000:30000", "-P", "localhost"]
+# -j: --createhomedir
+# -Y: --tls O: no TLS
+# -p: --passiveportrange
+# -P: --forcepassiveip
+CMD ["pure-ftpd", "-j", "-Y", "O", "-p", "30000:30000", "-P", "localhost"]

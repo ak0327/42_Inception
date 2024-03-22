@@ -64,6 +64,18 @@ add_wp() {
 }
 
 
+add_ftpd() {
+  local env_path=$1
+
+  content='# FTPD
+  PUBLIC_HOST=localhost
+  FTP_USER=${MYSQL_USER}
+  FTP_PASSWORD=${MYSQL_PASSWORD}
+  '
+  echo "$content" >> "$env_path"
+}
+
+
 add_ip() {
   local host_ip=$1
   local env_path=$2
@@ -106,6 +118,7 @@ main() {
   add_volume $env_path
   add_db $env_path
   add_wp $env_path
+  add_ftpd $env_path
   add_ip $host_ip $env_path
   add_cert $env_path
 }

@@ -162,7 +162,7 @@ services:
       - "21:21"
       - "30000:30000"
     volumes:
-      - wp_data:/var/www/html
+      - wp_data:${WP_CONTAINER_PATH:?WP_CONTAINER_PATH is not set}
       - /var/log/inception/pure-ftpd:/var/log/pure-ftpd
     restart: always
     healthcheck:
@@ -172,9 +172,10 @@ services:
       retries: 5
       start_period: 30s
     environment:
-      PUBLICHOST: "localhost"
-      FTP_USER: ${MYSQL_USER:?MYSQL_USER is not set}
-      FTP_PASSWORD: ${MYSQL_PASSWORD:?MYSQL_PASSWORD is not set}
+      WP_CONTAINER_PATH: ${WP_CONTAINER_PATH:?WP_CONTAINER_PATH is not set}
+      PUBLIC_HOST: ${PUBLIC_HOST:?PUBLIC_HOST is not set}
+      FTP_USER: ${FTP_USER:?FTP_USER is not set}
+      FTP_PASSWORD: ${FTP_PASSWORD:?FTP_PASSWORD is not set}
 
   hugo:
     image: hugo:inception
