@@ -2,7 +2,7 @@ include srcs/.env
 
 SRCS_DIR = srcs
 
-COMPOSE_FILE = srcs/compose.yaml
+COMPOSE_FILE = srcs/docker-compose.yml
 
 DOCKER_DIRS = srcs/requirements/mariadb \
        srcs/requirements/nginx \
