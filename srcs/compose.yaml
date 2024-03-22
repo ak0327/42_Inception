@@ -22,7 +22,7 @@ services:
       - /var/log/inception/mysql:/var/log/mysql
     networks:
       - database_network
-      - nginx_network
+      - web_network
 
   wordpress:
     image: wordpress:inception
@@ -63,7 +63,7 @@ services:
       - wp_data:${WP_CONTAINER_PATH:?WP_CONTAINER_PATH is not set}
       - /var/log/inception/wordpress:/var/www/html/wp-content/logs
     networks:
-      - nginx_network
+      - web_network
 
   nginx:
     image: nginx:inception
@@ -89,7 +89,7 @@ services:
       - hugo_data:${HUGO_CONTAINER_PATH:?HUGO_CONTAINER_PATH is not set}
       - /var/log/inception/nginx:/var/log/nginx
     networks:
-      nginx_network:
+      web_network:
         ipv4_address: ${WEB_PAGE_IP:?WEB_PAGE_IP is not set}  # takira.42.fr or takira.hugo.com
     environment:
       COUNTRY: ${COUNTRY:?COUNTRY is not set}
@@ -115,7 +115,7 @@ services:
       start_period: 30s
     restart: always
     networks:
-      - nginx_network
+      - web_network
 
   dnsmasq:
     image: dnsmasq:inception
@@ -134,7 +134,7 @@ services:
       timeout: 10s
       retries: 3
     networks:
-      nginx_network:
+      web_network:
         ipv4_address: ${DNSMASQ_IP:?DNSMASQ_IP is not set}
 
   adminer:
@@ -191,7 +191,7 @@ services:
     volumes:
       - hugo_data:${HUGO_CONTAINER_PATH:?HUGO_CONTAINER_PATH is not set}
     networks:
-      - nginx_network
+      - web_network
 
 # volumes ----------------------------------------------------------------------
 volumes:
@@ -217,7 +217,7 @@ volumes:
 
 # networks ---------------------------------------------------------------------
 networks:
-  nginx_network:
+  web_network:
     ipam:
       config:
         - subnet: ${NGINX_NETWORK_SUBNET:?NGINX_NETWORK_SUBNET is not set}
