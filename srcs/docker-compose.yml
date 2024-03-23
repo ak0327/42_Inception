@@ -194,6 +194,8 @@ services:
       - hugo_data:${HUGO_CONTAINER_PATH:?HUGO_CONTAINER_PATH is not set}
     networks:
       - web_network
+    environment:
+      HUGO_CONTAINER_PATH: ${HUGO_CONTAINER_PATH:?HUGO_CONTAINER_PATH is not set}
 
 # volumes ----------------------------------------------------------------------
 volumes:

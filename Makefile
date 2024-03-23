@@ -20,15 +20,10 @@ all: start
 ###########################################################################
 
 .PYHONY: up
-up: env
-	$(eval DB_VOLUME_DIR := $(if $(DB_VOLUME_DIR), $(DB_VOLUME_DIR), /var/lib/mysql))
-	$(eval WP_VOLUME_DIR := $(if $(WP_VOLUME_DIR), $(WP_VOLUME_DIR), /var/www/html))
-	$(eval HUGO_VOLUME_DIR := $(if $(HUGO_VOLUME_DIR), $(HUGO_VOLUME_DIR), /var/www/blog))
-	mkdir -p ${DB_VOLUME_DIR} ${WP_VOLUME_DIR} ${HUGO_VOLUME_DIR}
-	docker-compose -f $(COMPOSE_FILE) up --build
+up: env init_volume
 
 .PYHONY: start
-start: env
+start: env init_volume
 	docker-compose -f $(COMPOSE_FILE) up -d --build
 
 .PYHONY: stop
@@ -54,13 +49,22 @@ clean:
 	@docker volume prune -f
 
 .PYHONY: fclean
-fclean: clean init_volume
+fclean: clean clear_volume
 
 .PYHONY: init_volume
 init_volume:
-	$(eval DB_VOLUME_DIR := $(if $(DB_VOLUME_DIR), $(DB_VOLUME_DIR), /var/lib/mysql))
-	$(eval WP_VOLUME_DIR := $(if $(WP_VOLUME_DIR), $(WP_VOLUME_DIR), /var/www/html))
-	sudo rm -rf ${DB_VOLUME_DIR}/* ${WP_VOLUME_DIR}/*
+	$(eval DB_VOLUME_DIR := $(if $(DB_VOLUME_DIR), $(DB_VOLUME_DIR), /home/takira/data/mariadb))
+	$(eval WP_VOLUME_DIR := $(if $(WP_VOLUME_DIR), $(WP_VOLUME_DIR), /home/takira/data/wordpress))
+	$(eval HUGO_VOLUME_DIR := $(if $(HUGO_VOLUME_DIR), $(HUGO_VOLUME_DIR), /home/takira/data/hugo))
+	sudo mkdir -p ${DB_VOLUME_DIR} ${WP_VOLUME_DIR} ${HUGO_VOLUME_DIR}
+
+
+.PYHONY: clear_volume
+clear_volume:
+	$(eval DB_VOLUME_DIR := $(if $(DB_VOLUME_DIR), $(DB_VOLUME_DIR), /home/takira/data/mariadb))
+	$(eval WP_VOLUME_DIR := $(if $(WP_VOLUME_DIR), $(WP_VOLUME_DIR), /home/takira/data/wordpress))
+	$(eval HUGO_VOLUME_DIR := $(if $(HUGO_VOLUME_DIR), $(HUGO_VOLUME_DIR), /home/takira/data/hugo))
+	sudo rm -rf ${DB_VOLUME_DIR} ${WP_VOLUME_DIR} ${HUGO_VOLUME_DIR}
 
 .PYHONY: re
 re: fclean start
@@ -68,6 +72,8 @@ re: fclean start
 .PYHONY: env
 env:
 	@./$(ENV_SH) $(ENV_PATH)
+
+
 
 
 ###########################################################################
