@@ -12,11 +12,11 @@ if ! id "$FTP_USER" &>/dev/null; then
 fi
 
 echo "$PUBLIC_HOST" > /etc/pure-ftpd/conf/ForcePassiveIP
-echo "30000" > /etc/pure-ftpd/conf/PassivePortRange
+echo "30000 30009" > /etc/pure-ftpd/conf/PassivePortRange
 echo "no" > /etc/pure-ftpd/conf/NoAnonymous
 echo "yes" > /etc/pure-ftpd/conf/ChrootEveryone
 
 chown "$FTP_USER":"$FTP_USER" "$WP_CONTAINER_PATH"
-chmod 755 "$WP_CONTAINER_PATH"
+chmod 775 "$WP_CONTAINER_PATH"
 
 exec "$@"

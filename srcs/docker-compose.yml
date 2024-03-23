@@ -161,7 +161,7 @@ services:
     build: requirements/bonus/ftpd
     ports:
       - "21:21"
-      - "30000:30000"
+      - "30000-30009:30000-30009"
     volumes:
       - wp_data:${WP_CONTAINER_PATH:?WP_CONTAINER_PATH is not set}
       - /var/log/inception/pure-ftpd:/var/log/pure-ftpd

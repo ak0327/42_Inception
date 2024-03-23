@@ -6,7 +6,7 @@ RUN apk add --no-cache \
     pure-ftpd=1.0.51-r1
 
 RUN mkdir -p /var/www/html /etc/pure-ftpd/conf /var/log/pure-ftpd \
-    && chmod 755 /var/www/html
+    && chmod 775 /var/www/html
 
 COPY tools/entrypoint.sh /usr/local/bin
 RUN chmod +x /usr/local/bin/entrypoint.sh
@@ -17,4 +17,4 @@ ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 # -Y: --tls O: no TLS
 # -p: --passiveportrange
 # -P: --forcepassiveip
-CMD ["pure-ftpd", "-j", "-Y", "O", "-p", "30000:30000", "-P", "localhost"]
+CMD ["pure-ftpd", "-j", "-Y", "O", "-p", "30000:30009", "-P", "localhost"]
