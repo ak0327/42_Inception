@@ -1,5 +1,3 @@
-SRCS_DIR = srcs
-
 COMPOSE_FILE = srcs/docker-compose.yml
 
 DOCKER_DIRS = srcs/requirements/mariadb \
@@ -13,43 +11,53 @@ ENV_SH = srcs/make_env.sh
 ENV_PATH = srcs/.env
 
 
-###########################################################################
+########################################################################################################################
+
 
 all: start
 
-###########################################################################
+
+########################################################################################################################
+
 
 .PYHONY: up
 up: env init_volume
+	docker-compose -f $(COMPOSE_FILE) up --build
+
 
 .PYHONY: start
 start: env init_volume
 	docker-compose -f $(COMPOSE_FILE) up -d --build
 
+
 .PYHONY: stop
 stop:
 	docker-compose -f $(COMPOSE_FILE) stop
+
 
 .PYHONY: restart
 restart:
 	docker-compose -f $(COMPOSE_FILE) restart
 
+
 .PYHONY: down
 down:
 	docker-compose -f $(COMPOSE_FILE) down
 
+
 .PYHONY: clean
-clean:
-	@docker-compose -f $(COMPOSE_FILE) down --volumes --rmi all
+clean: down
 	@if [ -n "$$(docker ps -a -q)" ]; then docker stop $$(docker ps -a -q); fi
 	@if [ -n "$$(docker ps -a -q)" ]; then docker rm -f $$(docker ps -a -q); fi
-	@if [ -n "$$(docker images -q)" ]; then docker rmi -f $$(docker images -q); fi
+	@#if [ -n "$$(docker images -q)" ]; then docker rmi -f $$(docker images -q); fi
 	@if [ -n "$$(docker images -f "dangling=true" -q)" ]; then docker rmi -f $$(docker images -f "dangling=true" -q); fi
-	@docker network ls --filter type=custom -q | xargs -r docker network rm
+	@docker network rm $$(docker network ls -q) 2>/dev/null || true
 	@docker volume prune -f
+
 
 .PYHONY: fclean
 fclean: clean clear_volume
+
 
 .PYHONY: init_volume
 init_volume:
@@ -66,17 +74,18 @@ clear_volume:
 	$(eval HUGO_VOLUME_DIR := $(if $(HUGO_VOLUME_DIR), $(HUGO_VOLUME_DIR), /home/takira/data/hugo))
 	sudo rm -rf ${DB_VOLUME_DIR} ${WP_VOLUME_DIR} ${HUGO_VOLUME_DIR}
 
+
 .PYHONY: re
 re: fclean start
+
 
 .PYHONY: env
 env:
 	@./$(ENV_SH) $(ENV_PATH)
 
 
+########################################################################################################################
 
-
-###########################################################################
 
 .PYHONY: logs
 logs:
@@ -106,16 +115,9 @@ ps:
 ps-a:
 	docker-compose -f $(COMPOSE_FILE) ps -a
 
-###########################################################################
 
-.PYHONY: lint
-lint:
-	@hadolint --version
-	@hadolint $(DOCKER_FILES) \
-	&& echo "\033[0;32mHADOLINT DONE\033[0m" \
-	|| echo "\033[0;31mHADOLINT ERROR\033[0m"
+########################################################################################################################
 
-###########################################################################
 
 .PYHONY: exec_mariadb
 exec_mariadb:
@@ -150,3 +152,12 @@ exec_ftpd:
 	docker exec -it srcs_ftpd_1 sh
 
 
+########################################################################################################################
+
+
+.PYHONY: lint
+lint:
+	@hadolint --version
+	@hadolint $(DOCKER_FILES) \
+	&& echo "\033[0;32mHADOLINT DONE\033[0m" \
+	|| echo "\033[0;31mHADOLINT ERROR\033[0m"
