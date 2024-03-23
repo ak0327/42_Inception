@@ -16,4 +16,7 @@ echo "30000" > /etc/pure-ftpd/conf/PassivePortRange
 echo "no" > /etc/pure-ftpd/conf/NoAnonymous
 echo "yes" > /etc/pure-ftpd/conf/ChrootEveryone
 
+chown "$FTP_USER":"$FTP_USER" "$WP_CONTAINER_PATH"
+chmod 755 "$WP_CONTAINER_PATH"
+
 exec "$@"

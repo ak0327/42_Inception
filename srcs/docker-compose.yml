@@ -23,7 +23,6 @@ services:
       - /var/log/inception/mysql:/var/log/mysql
     networks:
       - database_network
-      - web_network
 
   wordpress:
     image: wordpress:inception
@@ -64,6 +63,7 @@ services:
       - wp_data:${WP_CONTAINER_PATH:?WP_CONTAINER_PATH is not set}
       - /var/log/inception/wordpress:/var/www/html/wp-content/logs
     networks:
+      - database_network
       - web_network
 
   nginx:

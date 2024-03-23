@@ -49,10 +49,11 @@ down:
 clean: down
 	@if [ -n "$$(docker ps -a -q)" ]; then docker stop $$(docker ps -a -q); fi
 	@if [ -n "$$(docker ps -a -q)" ]; then docker rm -f $$(docker ps -a -q); fi
-	@#if [ -n "$$(docker images -q)" ]; then docker rmi -f $$(docker images -q); fi
+	@if [ -n "$$(docker images -q)" ]; then docker rmi -f $$(docker images -q); fi
 	@if [ -n "$$(docker images -f "dangling=true" -q)" ]; then docker rmi -f $$(docker images -f "dangling=true" -q); fi
 	@docker network rm $$(docker network ls -q) 2>/dev/null || true
 	@docker volume prune -f
+	sudo rm -rf /var/log/inception/*
 
 
 .PYHONY: fclean
