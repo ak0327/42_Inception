@@ -65,6 +65,7 @@ init_volume:
 	$(eval DB_VOLUME_DIR := $(if $(DB_VOLUME_DIR), $(DB_VOLUME_DIR), /home/takira/data/mariadb))
 	$(eval WP_VOLUME_DIR := $(if $(WP_VOLUME_DIR), $(WP_VOLUME_DIR), /home/takira/data/wordpress))
 	$(eval HUGO_VOLUME_DIR := $(if $(HUGO_VOLUME_DIR), $(HUGO_VOLUME_DIR), /home/takira/data/hugo))
+	$(eval LOGIN := $(if $(LOGIN), $(LOGIN), takira))
 	sudo mkdir -p ${DB_VOLUME_DIR} ${WP_VOLUME_DIR} ${HUGO_VOLUME_DIR}
 
 

@@ -31,7 +31,7 @@ RUN curl --silent -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/ph
 ENV WP_CONTAINER_PATH="/var/www/html"
 RUN mkdir -p "${WP_CONTAINER_PATH}" /var/www/html/wp-content/logs \
     && chown -R nobody:nobody "${WP_CONTAINER_PATH}" \
-    && chmod -R 755 "${WP_CONTAINER_PATH}"
+    && chmod -R 775 "${WP_CONTAINER_PATH}"
 
 COPY conf/www.conf /etc/php81/php-fpm.d/www.conf
 

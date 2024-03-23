@@ -19,4 +19,5 @@ echo "yes" > /etc/pure-ftpd/conf/ChrootEveryone
 chown "$FTP_USER":"$FTP_USER" "$WP_CONTAINER_PATH"
 chmod 775 "$WP_CONTAINER_PATH"
 
+
 exec "$@"

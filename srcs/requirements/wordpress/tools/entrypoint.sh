@@ -71,7 +71,7 @@ main() {
   fi
 
   chown -R nobody:nobody "${WP_CONTAINER_PATH}"
-  chmod -R 755 "${WP_CONTAINER_PATH}"
+  chmod -R 775 "${WP_CONTAINER_PATH}"
 
 }
 
