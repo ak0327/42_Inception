@@ -1,56 +1,56 @@
-#name: Docker Compose CI
-#on: [push]
-#jobs:
-#  docker-compose-ci-test:
-#    runs-on: ubuntu-latest
-#    timeout-minutes: 10
-#    steps:
-#      - name: Checkout code
-#        uses: actions/checkout@v3
-#
-#      - name: Set up Docker and Docker Compose
-#        run: |
-#          sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-#          sudo chmod +x /usr/local/bin/docker-compose
-#          docker-compose --version
-#
-#      - name: Build and start containers
-#        run: make start
-#
-#      - name: Check containers health
-#        run: |
-#          timeout_sec=300
-#          while [ $timeout_sec -gt 0 ]; do
-#            make ps
-#
-#            if [ $(make ps | grep -E 'starting' | wc -l) -eq 0 ]; then
-#              echo -e "\e[33mAll containers are finish starting up\e[0m"
-#              break
-#            fi
-#
-#            echo -e "\e[33mWaiting for all containers to finish starting up... remain:${timeout_sec}sec\e[0m"
-#            sleep 10
-#            timeout_sec=$((timeout_sec - 10))
-#          done
-#
-#          healthy_count=$(make ps | grep '(healthy)' | wc -l)
-#          up_count=$(make ps | grep 'Up' | wc -l)
-#          if [ $healthy_count -eq $up_count ]; then
-#            echo -e "\e[32m[OK] All containers are healthy\e[0m"
-#            exit 0
-#          fi
-#
-#          unhealthy_count=$(make ps | grep '(unhealthy)' | wc -l)
-#          if [ $unhealthy_count -gt 0 ]; then
-#            echo -e "\e[31m[NG] ${unhealthy_count} unhealthy containers found\e[0m"
-#            exit 1
-#          fi
-#
-#          if [ $timeout_sec -le 0 ]; then
-#            echo -e "\e[31m[NG] Timeout waiting for containers to finish starting up\e[0m"
-#            exit 1
-#          fi
-#
-#      - name: Clean up
-#        if: always()
-#        run: make clean
+name: Docker Compose CI
+on: [push]
+jobs:
+  docker-compose-ci-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Docker and Docker Compose
+        run: |
+          sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+          docker-compose --version
+
+      - name: Build and start containers
+        run: make start
+
+      - name: Check containers health
+        run: |
+          timeout_sec=300
+          while [ $timeout_sec -gt 0 ]; do
+            make ps
+
+            if [ $(make ps | grep -E 'starting' | wc -l) -eq 0 ]; then
+              echo -e "\e[33mAll containers are finish starting up\e[0m"
+              break
+            fi
+
+            echo -e "\e[33mWaiting for all containers to finish starting up... remain:${timeout_sec}sec\e[0m"
+            sleep 10
+            timeout_sec=$((timeout_sec - 10))
+          done
+
+          healthy_count=$(make ps | grep '(healthy)' | wc -l)
+          up_count=$(make ps | grep 'Up' | wc -l)
+          if [ $healthy_count -eq $up_count ]; then
+            echo -e "\e[32m[OK] All containers are healthy\e[0m"
+            exit 0
+          fi
+
+          unhealthy_count=$(make ps | grep '(unhealthy)' | wc -l)
+          if [ $unhealthy_count -gt 0 ]; then
+            echo -e "\e[31m[NG] ${unhealthy_count} unhealthy containers found\e[0m"
+            exit 1
+          fi
+
+          if [ $timeout_sec -le 0 ]; then
+            echo -e "\e[31m[NG] Timeout waiting for containers to finish starting up\e[0m"
+            exit 1
+          fi
+
+      - name: Clean up
+        if: always()
+        run: make clean
