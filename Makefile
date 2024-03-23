@@ -21,7 +21,10 @@ all: start
 
 .PYHONY: up
 up: env
-	mkdir -p ${DB_VOLUME_DIR:?} ${WP_VOLUME_DIR:?} ${HUGO_VOLUME_DIR:?}
+	$(eval DB_VOLUME_DIR := $(if $(DB_VOLUME_DIR), $(DB_VOLUME_DIR), /var/lib/mysql))
+	$(eval WP_VOLUME_DIR := $(if $(WP_VOLUME_DIR), $(WP_VOLUME_DIR), /var/www/html))
+	$(eval HUGO_VOLUME_DIR := $(if $(HUGO_VOLUME_DIR), $(HUGO_VOLUME_DIR), /var/www/blog))
+	mkdir -p ${DB_VOLUME_DIR} ${WP_VOLUME_DIR} ${HUGO_VOLUME_DIR}
 	docker-compose -f $(COMPOSE_FILE) up --build
 
 .PYHONY: start
@@ -55,7 +58,9 @@ fclean: clean init_volume
 
 .PYHONY: init_volume
 init_volume:
-	sudo rm -rf ${DB_VOLUME_DIR:?}/* ${WP_VOLUME_DIR:?}/*
+	$(eval DB_VOLUME_DIR := $(if $(DB_VOLUME_DIR), $(DB_VOLUME_DIR), /var/lib/mysql))
+	$(eval WP_VOLUME_DIR := $(if $(WP_VOLUME_DIR), $(WP_VOLUME_DIR), /var/www/html))
+	sudo rm -rf ${DB_VOLUME_DIR}/* ${WP_VOLUME_DIR}/*
 
 .PYHONY: re
 re: fclean start
@@ -63,6 +68,7 @@ re: fclean start
 .PYHONY: env
 env:
 	@./$(ENV_SH) $(ENV_PATH)
+
 
 ###########################################################################
 
@@ -98,7 +104,8 @@ ps-a:
 
 .PYHONY: lint
 lint:
-	hadolint $(DOCKER_FILES) \
+	@hadolint --version
+	@hadolint $(DOCKER_FILES) \
 	&& echo "\033[0;32mHADOLINT DONE\033[0m" \
 	|| echo "\033[0;31mHADOLINT ERROR\033[0m"
 
