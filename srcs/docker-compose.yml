@@ -106,8 +106,6 @@ services:
   redis:
     image: redis:inception
     build: requirements/bonus/redis
-    ports:
-      - "${HOST_IP}:6379:6379"
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
