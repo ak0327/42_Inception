@@ -20,6 +20,7 @@
 * [Docker-docs](https://docs.docker.jp/index.html)
 * [社内のDockerfileのベストプラクティスを公開します](https://zenn.dev/forcia_tech/articles/20210716_docker_best_practice)
 * [実践 Docker - ソフトウェアエンジニアの「Docker よくわからない」を終わりにする本](https://zenn.dev/suzuki_hoge/books/2022-03-docker-practice-8ae36c33424b59)
+* [シェルスクリプトで自動インストールスクリプトを作成する際の注意点メモ](https://qiita.com/seigot/items/f481445b9bd917e21f4a)
 
 <br>
 
@@ -59,7 +60,7 @@
 * [Hugo command](https://gohugo.io/commands/)
 * [hugo-theme-hello-friend-ng](https://github.com/rhazdon/hugo-theme-hello-friend-ng)
 * [非エンジニアの初心者がHugo(テーマStack)+GitHub Pagesでブログを開設するまで](https://miiitomi.github.io/p/hugo/)
-* 
+
 
 ### 7) Adminer
 * [Adminer docker hub](https://hub.docker.com/_/adminer/)
@@ -78,3 +79,4 @@
 ## 5. linter
 * [hadolint](https://github.com/hadolint/hadolint)
 * [Hadolint: Lint Dockerfiles from the Command Line](https://thenewstack.io/hadolint-lint-dockerfiles-from-the-command-line/)
+
