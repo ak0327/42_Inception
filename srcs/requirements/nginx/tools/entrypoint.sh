@@ -1,6 +1,8 @@
 #!/bin/sh
 
-set -eu -o pipefail
+set -o errexit
+set -o nounset
+set -o pipefail
 
 make_ssl_cert() {
   mkdir -p ${CRT_DIR}

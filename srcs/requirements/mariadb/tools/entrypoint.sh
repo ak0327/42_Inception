@@ -1,7 +1,8 @@
 #!/bin/sh
 
-set -eu -o pipefail
-
+set -o errexit
+set -o nounset
+set -o pipefail
 
 init_db() {
     mysql_install_db --user=mysql --datadir=${DB_CONTAINER_PATH}
